@@ -1,0 +1,22 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/x86_64-linux-gnu-g++-11",
+      "-O2",
+      "-O3",
+      "-DLINUX",
+      "-D_GNU_SOURCE",
+      "-Wall",
+      "-I/usr/local/include/dynamixel_sdk",
+      "-m64",
+      "-g",
+      "-c",
+      "blink.cpp",
+      "-o",
+      ".objects/blink.o"
+    ],
+    "directory": "/home/devon/Source/Robotics/blink",
+    "file": "/home/devon/Source/Robotics/blink/blink.cpp",
+    "output": "/home/devon/Source/Robotics/blink/.objects/blink.o"
+  }
+]
