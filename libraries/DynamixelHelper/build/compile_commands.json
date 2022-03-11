@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/devon/Repos/Robotics/libraries/DynamixelHelper/build",
+  "command": "/usr/bin/c++ -DDynamixelHelper_EXPORTS -I/usr/local/include/dynamixel_sdk -fPIC -o CMakeFiles/DynamixelHelper.dir/dynamixel_helper.cpp.o -c /home/devon/Repos/Robotics/libraries/DynamixelHelper/dynamixel_helper.cpp",
+  "file": "/home/devon/Repos/Robotics/libraries/DynamixelHelper/dynamixel_helper.cpp"
+}
+]

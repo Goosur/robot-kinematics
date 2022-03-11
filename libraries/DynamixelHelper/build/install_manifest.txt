@@ -1,0 +1,2 @@
+/usr/local/lib/libDynamixelHelper.so
+/usr/local/include/DynamixelHelper/dynamixel_helper.h

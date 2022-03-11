@@ -1,36 +1,14 @@
-#if defined(__linux__) || defined(__APPLE__)
-#include <fcntl.h>
+// For getting key press
 #include <unistd.h>
 #include <termios.h>
-#define STDIN_FILENO 0
-#elif defined(_WIN32) || defined(_WIN64)
-#include <conio.h>
-#include <windows.h>
-#endif
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <iostream>
 
-#include "dynamixel_sdk.h"  // Uses DYNAMIXEL SDK library
-
-// Control table address for wx200 arm motors
-#define ADDR_TORQUE_ENABLE          64      // RW - Init Val: 0, Range: 0 ~ 1
-#define ADDR_LED                    65      // RW - Init Val: 0, Range: 0 ~ 1
-#define BAUDRATE                    1000000 // Dynamixel XM430-W350-T / XL430-W250-T BAUDRATE
-
-// DYNAMIXEL Protocol Version (1.0 / 2.0)
-// https://emanual.robotis.com/docs/en/dxl/protocol2/
-#define PROTOCOL_VERSION  2.0
-
-// Use the actual port assigned to the U2D2.
-// ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
-#define DEVICENAME  "/dev/ttyUSB0"
-
-#define ESC_ASCII_VALUE                 0x1b
+#include "dynamixel_sdk.h"
+#include "dynamixel_helper.h"
 
 // Get character input
 int getch() {
-#if defined(__linux__) || defined(__APPLE__)
     struct termios oldt, newt; // old terminal mode, new terminal mode
     int ch;
     tcgetattr(STDIN_FILENO, &oldt); // Get old terminal mode from terminal STDIN_FILENO
@@ -40,93 +18,40 @@ int getch() {
     ch = getchar(); // Get character from terminal in new mode
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt); // Set terminal to old mode again
     return ch;
-#elif defined(_WIN32) || defined(_WIN64)
-return _getch();
-#endif
 }
 
 int main() {
-    // Initialize PortHandler instance
-    dynamixel::PortHandler *portHandler = dynamixel::PortHandler::getPortHandler(DEVICENAME);
+    
+    const char port[] = "/dev/ttyUSB0";
+    DynamixelHelper dynamixelHelper(port);
 
-    // Initialize PacketHandler instance
-    dynamixel::PacketHandler *packetHandler = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION);
+    uint8_t motorIDs[] = {1, 2, 4, 5, 6};
 
-    // Error statuses
-    uint8_t dxl_error = 0; // Motor error code
-    int dxl_comm_result = COMM_TX_FAIL; // Communication result
-
-    std::array<int, 6> motorIDs = {1, 2, 4, 5, 6, 7};
-
-    // Open port
-    if (portHandler->openPort()) {
-        printf("Successfully opened the port!\n");
-    }
-    else
-    {
-        printf("Failed to open the port!\n");
-        printf("Press any key to terminate...\n");
-        getch();
-        return 0;
-    }
-
-    // Set port baudrate
-    if (portHandler->setBaudRate(BAUDRATE))
-    {
-        printf("Successfully changed the baudrate!\n");
-    }
-    else
-    {
-        printf("Failed to change the baudrate!\n");
-        printf("Press any key to terminate...\n");
-        getch();
-        return 0;
-    }
+    dynamixelHelper.openPort();
+    dynamixelHelper.setBaudrate(1000000);
 
     // Blink all motor leds
     bool led_status = false;
     while(true) {
-        printf("Press any key to toggle LEDs. (Press [ESC] to exit)\n");
-        if (getch() == ESC_ASCII_VALUE)
+        std::cout << "Press any key to toggle LEDs. (Press [ESC] to exit)" << std::endl;
+        if (getch() == 0x1b)
           break;
 
         // Toggle led on/off
         led_status = !led_status;
 
-        for (int i : motorIDs)
+        for (uint8_t id : motorIDs)
         {
-            // Enable led
-            dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, i, 65, int(led_status), &dxl_error);
-
-            // Display any errors in communication or motors.
-            if (dxl_comm_result != COMM_SUCCESS)
-            {
-                printf("Motor %d: %s\n", i, packetHandler->getTxRxResult(dxl_comm_result));
-            }
-            else if (dxl_error != 0)
-            {
-                printf("Motor %d: %s\n", i, packetHandler->getRxPacketError(dxl_error));
-            }
+            if (led_status)
+                dynamixelHelper.ledEnable(id);            
+            else
+                dynamixelHelper.ledDisable(id);
         }
     }
 
     // Disable all leds before stopping program
-    for (int i : motorIDs)
-    {
-        // Enable led
-        dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, i, 65, 0, &dxl_error);
+    for (uint8_t id : motorIDs)
+        dynamixelHelper.ledDisable(id);
 
-        // Display any errors in communication or motors.
-        if (dxl_comm_result != COMM_SUCCESS)
-        {
-            printf("Motor %d: %s\n", i, packetHandler->getTxRxResult(dxl_comm_result));
-        }
-        else if (dxl_error != 0)
-        {
-            printf("Motor %d: %s\n", i, packetHandler->getRxPacketError(dxl_error));
-        }
-    }
-    
-    portHandler->closePort();
     return 0;
 }

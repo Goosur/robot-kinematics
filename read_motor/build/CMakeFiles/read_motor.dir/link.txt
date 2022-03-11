@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/read_motor.dir/read_motor.cpp.o -o read_motor  -lDynamixelHelper -ldxl_x64_cpp 

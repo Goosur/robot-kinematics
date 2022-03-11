@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import os, sys, getopt
+import os, sys
 
 def read_file(input_file):
     """
@@ -21,10 +21,10 @@ def read_file(input_file):
     return headers, data
 
 
-def regression(d, x, y, title):
+def regression(n, x, y, title):
 
     fig, ax = plt.subplots(2, 1)
-    fig.suptitle(title + f" d={d}")
+    fig.suptitle(title)
     ax[0].plot(x, y, 'ob', label="Averaged Joint States")
     ax[0].set_xlabel("Time")
     ax[0].set_ylabel("Joint Angle")
@@ -34,12 +34,7 @@ def regression(d, x, y, title):
     h = np.ones(x.shape)
     a = h
 
-    # Hstack x's for each degree
-    # for i in range(d):
-    #     a = np.hstack((x**(i+1), a))
-
     # Distribute gaussians
-    n = 25
     mean = np.linspace(0, 1, n)
     std = np.full((n,), 1 / n)
     for i in range(n):
@@ -48,8 +43,6 @@ def regression(d, x, y, title):
     # Calculate weights and predict y values
     w = np.linalg.inv(a.T @ a) @ a.T @ y
     y_pred = a @ w
-
-    print(f"Weights: {w}")
 
     # Get synthetic values for clean plotting
     x_synth = np.linspace(x.min(), x.max(), y_pred.shape[0])
@@ -68,14 +61,17 @@ def regression(d, x, y, title):
 
     # Compute regression stats
     r, rsq, mse = stats(y, y_pred)
-    # print(f"Polynomial d={d}, RSq: {rsq}, MSE: {mse}")
-    # print("roscpp equation: ")
-    # for i in range(w.shape[0]):
-    #     if i != (w.shape[0] - 1):
-    #         print(f"{w[i][0]}*pow(phase, {w.shape[0] - i - 1}.0) + ", end="")
-    #     else:
-    #         print(f"{w[i][0]}", end="")
-    # print("\n")
+
+    reversed_mean = np.flip(mean)
+    reversed_std = np.flip(std)
+    
+    print("c++ equation: ")
+    for i in range(w.shape[0]):
+        if i != (w.shape[0] - 1):
+            print(f"{w[i][0]} * exp(-pow(phase - {reversed_mean[i]}, 2) / (2 * pow({reversed_std[i]}, 2))) + ")
+        else:
+            print(f"{w[i][0]}")
+    print("\n")
 
     # Plot error
     ax[1].plot(x, np.abs(r), 'or')
@@ -99,7 +95,7 @@ def stats(y, y_pred):
     return r, rsq, mse
 
 
-def linear_regression(input_file, x_col, y_col):
+def linear_regression(input_file, x_col, y_col, num_gaussians):
     # Read in datasets.
     headers, data = read_file(input_file)
 
@@ -108,65 +104,30 @@ def linear_regression(input_file, x_col, y_col):
     print(data_numeric.shape)
 
     # Pull user defined columns from data
-    if type(x_col) is str:
-        x_header = x_col
-        x = data[:, headers.index(x_col)]
-    else:
-        x_header = headers[x_col]
-        x = data[:, x_col]
+    x_header = headers[x_col]
+    x_data = data[:, x_col]
 
-    if type(y_col) is str:
-        y_header = y_col
-        y = data[:, headers.index(y_col)]
-    else:
-        y_header = headers[y_col]
-        y = data[:, y_col]
+    y_header = headers[y_col]
+    y_data = data[:, y_col]
 
     # We want 1d arrays not 0d
-    x.shape = (x.shape[0], 1)
-    y.shape = (y.shape[0], 1)
+    x_data.shape = (x_data.shape[0], 1)
+    y_data.shape = (y_data.shape[0], 1)
 
-    regression(1, x, y, y_header)
-    # regression(2, x, y, y_header)
-    # regression(3, x, y, y_header)
-    # regression(4, x, y, y_header)
-    # regression(5, x, y, y_header)
-    # regression(6, x, y, y_header)
-    # regression(7, x, y, y_header)
-    # regression(8, x, y, y_header)
-    # regression(9, x, y, y_header)
-    # regression(10, x, y, y_header)
+    regression(num_gaussians, x_data, y_data, y_header)
 
 
-def main(argv):
-    input_file = ''
+def main(args):
     x_col = ''
     y_col = ''
+    num_gaussians = 0
 
-    try:
-        opts, args = getopt.getopt(argv, "hi:x:y:")
-    except getopt.GetoptError:
-        print("Usage: linear_regression.py -i <input_file> -x <x_header or x_col> -y <y_header or y_col>")
-        sys.exit(2)
+    input_file = args[0]
+    x_col = int(args[1])
+    y_col = int(args[2])
+    num_gaussians = int(args[3])
 
-    for opt, arg in opts:
-        if opt == "-h":
-            print("Usage: linear_regression.py -i <input_file> -x <x_header or x_col> -y <y_header or y_col>")
-            sys.exit()
-        elif opt == "-i":
-            input_file = arg
-        elif opt == "-x":
-            if arg.isdigit():
-                x_col = int(arg)
-            else:
-                x_col = arg
-        elif opt == "-y":
-            if arg.isdigit():
-                y_col = int(arg)
-            else:
-                y_col = arg
-
-    linear_regression(input_file, x_col, y_col)
+    linear_regression(input_file, x_col, y_col, num_gaussians)
 
 
 if __name__ == "__main__":
