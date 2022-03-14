@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/blink.dir/blink.cpp.o -o blink  -lDynamixelHelper -ldxl_x64_cpp 

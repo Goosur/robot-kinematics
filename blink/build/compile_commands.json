@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/devon/Repos/Robotics/blink/build",
-  "command": "/usr/bin/c++  -I/usr/local/include/dynamixel_sdk -I/usr/local/include/DynamixelHelper  -o CMakeFiles/blink.dir/blink.cpp.o -c /home/devon/Repos/Robotics/blink/blink.cpp",
-  "file": "/home/devon/Repos/Robotics/blink/blink.cpp"
-}
-]

@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/devon/Repos/Robotics/write_motor/build",
-  "command": "/usr/bin/c++  -I/usr/local/include/dynamixel_sdk -I/usr/local/include/DynamixelHelper  -o CMakeFiles/write_motor.dir/write_motor.cpp.o -c /home/devon/Repos/Robotics/write_motor/write_motor.cpp",
-  "file": "/home/devon/Repos/Robotics/write_motor/write_motor.cpp"
-}
-]

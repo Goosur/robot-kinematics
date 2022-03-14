@@ -1,3 +1,0 @@
-/home/devon/Repos/Robotics/write_motors/build/CMakeFiles/rebuild_cache.dir
-/home/devon/Repos/Robotics/write_motors/build/CMakeFiles/edit_cache.dir
-/home/devon/Repos/Robotics/write_motors/build/CMakeFiles/write_motors.dir

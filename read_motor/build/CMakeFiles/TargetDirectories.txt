@@ -1,3 +1,0 @@
-/home/devon/Repos/Robotics/read_motor/build/CMakeFiles/rebuild_cache.dir
-/home/devon/Repos/Robotics/read_motor/build/CMakeFiles/edit_cache.dir
-/home/devon/Repos/Robotics/read_motor/build/CMakeFiles/read_motor.dir
