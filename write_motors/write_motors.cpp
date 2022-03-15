@@ -27,15 +27,14 @@ int main() {
     DynamixelHelper dynamixelHelper(port);
 
     // Position data
-    uint8_t motor_ids[]{2, 4};
-    size_t ids_size = sizeof(motor_ids) / sizeof(motor_ids[0]);
-    double *present_positions;
-    double goal_positions[][2] = {
-        {0.0, 0.0},
-        {M_PI, M_PI}
+    uint8_t motor_ids[]{1, 2, 4, 5, 6};
+    size_t ids_size = sizeof(motor_ids) / sizeof(motor_ids[0]); double *present_positions;
+    double goal_positions[][5] = {
+        {M_PI, M_PI, M_PI, M_PI, M_PI},
+        {0 + M_PI, -1.88 + M_PI, 1.5 + M_PI, 0.8 + M_PI, 0 + M_PI},
     };
 
-    double moving_status_threshold = 20 * 0.088 * M_PI / 180.0;
+    double moving_status_threshold = 2 * 20 * 0.088 * M_PI / 180.0;
 
     // Initialize connection
     dynamixelHelper.openPort();
@@ -58,6 +57,7 @@ int main() {
         bool still_moving = true;
         do
         {
+            still_moving = false;
             present_positions = dynamixelHelper.groupGetAngle(motor_ids, ids_size);
             for (int i = 0; i < (int)ids_size; i++)
                 still_moving |= std::abs(goal_positions[index][i] - present_positions[i]) > moving_status_threshold;
