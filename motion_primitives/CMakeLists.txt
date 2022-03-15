@@ -3,8 +3,11 @@ cmake_minimum_required(VERSION 3.18)
 # Set project name
 project(playback_motor)
 
-# Add project executable
-add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
+# Add project executable and extra sources
+add_executable(${PROJECT_NAME}
+    ${PROJECT_NAME}.cpp
+    motion_primitives.cpp
+)
 
 # Link shared libraries
 link_directories(/usr/local/lib)
