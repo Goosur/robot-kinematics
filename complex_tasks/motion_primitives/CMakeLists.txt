@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 # Set project name
-project(playback_motor)
+project(playback_motion_primitives)
 
 # Add project executable and extra sources
 add_executable(${PROJECT_NAME}

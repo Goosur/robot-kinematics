@@ -24,13 +24,14 @@ int main() {
 
     int steps = 0;
     
+    double dphase = 0.001;
     double phase = 0.0;
     while(phase < 1.0)
     {
         // goal_positions = motion_primitives::draw_x(phase);
-        // goal_positions = motion_primitives::sleep_to_home(phase);
+        goal_positions = motion_primitives::sleep_to_home(phase);
         // goal_positions = motion_primitives::home_to_sleep(phase);
-        goal_positions = motion_primitives::draw_line(phase);
+        // goal_positions = motion_primitives::draw_line(phase);
 
         dynamixelHelper.groupSetAngle(motor_ids, ids_size, goal_positions);
 
@@ -45,7 +46,31 @@ int main() {
         }
         while (still_moving);
 
-        phase += 0.001;
+        phase += dphase;
+    }
+
+    phase = 0.0;
+    while(phase < 1.0)
+    {
+        // goal_positions = motion_primitives::draw_x(phase);
+        // goal_positions = motion_primitives::sleep_to_home(phase);
+        goal_positions = motion_primitives::home_to_sleep(phase);
+        // goal_positions = motion_primitives::draw_line(phase);
+
+        dynamixelHelper.groupSetAngle(motor_ids, ids_size, goal_positions);
+
+        bool still_moving = true;
+        do
+        {
+            present_positions = dynamixelHelper.groupGetAngle(motor_ids, ids_size);
+
+            still_moving = false;
+            for (int i = 0; i < (int)ids_size; i++)
+                still_moving |= std::abs(goal_positions[i] - present_positions[i]) > moving_status_threshold;
+        }
+        while (still_moving);
+
+        phase += dphase;
     }
 
     dynamixelHelper.groupTorqueDisable(motor_ids, ids_size);
