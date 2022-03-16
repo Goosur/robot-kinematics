@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <string>
 
 #include "dynamixel_sdk.h"
 #include "dynamixel_helper.h"
@@ -32,16 +31,16 @@ int main(int argc, char** argv) {
         motor_angles = dynamixelHelper.groupGetAngle(motor_ids, ids_size);
 
         // Convert current motor angles to end effector coordinates
-        hand_coordinates = forward_kinematics::get_hand_coordinates(motor_angles, ids_size);
+        hand_coordinates = forward_kinematics::get_hand_coordinates(motor_angles);
 
         // Write motor angles and end effector coordinates to file
         f << motor_angles[0] << "," << motor_angles[1] << "," << motor_angles[2] << "," << motor_angles[3] << "," << motor_angles[4]
                   << "," << hand_coordinates[0] << "," << hand_coordinates[1] << "," << hand_coordinates[2] << std::endl;
 
         // Display motor angles and end effector coordinates
-        std::cout << motor_angles[0] << "\t" << motor_angles[1] << "\t" << motor_angles[2] << "\t" << motor_angles[3] << "\t" << motor_angles[4]
-                  << "\t" << hand_coordinates[0] << "\t" << hand_coordinates[1] << "\t" << hand_coordinates[2] << std::endl;
-
+        // std::clog << motor_angles[0] << "\t" << motor_angles[1] << "\t" << motor_angles[2] << "\t" << motor_angles[3] << "\t" << motor_angles[4]
+        //           << "\t" << hand_coordinates[0] << "\t" << hand_coordinates[1] << "\t" << hand_coordinates[2] << std::endl;
+        std::clog << hand_coordinates[0] << "\t" << hand_coordinates[1] << "\t" << hand_coordinates[2] << std::endl;
     }
 
     f.close();

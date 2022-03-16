@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 # Set project name
-project(record_motors)
+project(record_hand_coordinates)
 
 # Add project executable
 add_executable(${PROJECT_NAME}
@@ -16,7 +16,7 @@ link_directories(/usr/local/lib)
 include_directories(
     /usr/local/include/dynamixel_sdk
     /usr/local/include/DynamixelHelper
-    /usr/local/include/eigen3
+    /usr/local/include/eigen3/Eigen/
 )
 
 # Link libraries to project
