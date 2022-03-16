@@ -29,7 +29,8 @@ int main() {
     {
         // goal_positions = motion_primitives::draw_x(phase);
         // goal_positions = motion_primitives::sleep_to_home(phase);
-        goal_positions = motion_primitives::home_to_sleep(phase);
+        // goal_positions = motion_primitives::home_to_sleep(phase);
+        goal_positions = motion_primitives::draw_line(phase);
 
         dynamixelHelper.groupSetAngle(motor_ids, ids_size, goal_positions);
 

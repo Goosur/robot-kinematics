@@ -23,9 +23,10 @@ def read_file(input_file):
 
 def regression(n, x, y, title):
 
+    plt.style.use('dark_background')
     fig, ax = plt.subplots(2, 1)
     fig.suptitle(title)
-    ax[0].plot(x, y, 'ob', label="Averaged Joint States")
+    ax[0].plot(x, y, 'ow', label="Averaged Joint States")
     ax[0].set_xlabel("Time")
     ax[0].set_ylabel("Joint Angle")
     ax[0].grid()
@@ -56,7 +57,7 @@ def regression(n, x, y, title):
     y_synth = a_synth @ w
 
     # Plot smooth regression line
-    ax[0].plot(x_synth, y_synth, '-r', label="Line of \"best\" fit")
+    ax[0].plot(x_synth, y_synth, '-m', label="Line of \"best\" fit")
     ax[0].legend()
 
     # Compute regression stats
@@ -74,7 +75,7 @@ def regression(n, x, y, title):
     print("\n")
 
     # Plot error
-    ax[1].plot(x, np.abs(r), 'or')
+    ax[1].plot(x, np.abs(r), 'om')
     ax[1].set_xlabel("Time")
     ax[1].set_ylabel("|y - y*|")
     ax[1].set_title(f"MSE: {mse}")
@@ -134,5 +135,5 @@ if __name__ == "__main__":
     np.set_printoptions(suppress=True)
     main(sys.argv[1:])
     plt.tight_layout()
-    # plt.show()
+    plt.show()
 
