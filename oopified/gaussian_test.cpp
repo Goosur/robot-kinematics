@@ -34,7 +34,7 @@ double rand_double( double min, double max )
 void test_height( Gaussian* g )
 {
 	double x = rand_double( 0.0, 1.0 );
-	double y = g->get_height( x );
+	double y = g->at( x );
 	printf( "\ng(%.3f) = %.3f\n", x, y );
 }
 
@@ -48,10 +48,10 @@ void test_mutators( Gaussian* g )
 	double mean = rand_double( 0.0, 1.0 );
 	double variance = rand_double( 0.0, 2.0 );
 	double weight = rand_double( -5.0, 5.0 );
-	g->set_mean( mean );
-	g->set_variance( variance );
 	g->set_weight( weight );
-	g->display();
+	g->set_mean( mean );
+	g->set_std( variance );
+	g->to_string();
 }
 
 /**
@@ -63,12 +63,9 @@ void test_accessors( Gaussian* g )
 {
 	printf( "\nTesting accessors of Gaussian object at location %p\n", g );
 	double m = g->get_mean();
-	double v = g->get_variance();
+	double v = g->get_std();
 	double w = g->get_weight();
-	printf( "\tmean     = %.3f\n", m );
-	printf( "\tvariance = %.3f\n", v );
-	printf( "\tweight   = %.3f\n", w );
-	printf( "\tg(x)     = %.3f * exp( -(x - %.3f)^2 / (2 * %.3f) )\n", w, m, v );
+  g->to_string();
 }
 
 int main()
@@ -78,7 +75,7 @@ int main()
 	
 	// create a gaussian and display its characteristics
 	Gaussian* g = new Gaussian();
-	g->display();
+	g->to_string();
 	test_height( g );
 
 	// alter the gaussian

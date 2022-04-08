@@ -14,31 +14,25 @@
 #include <vector>
 using std::vector;
 
-template <typename Object>
+template <typename T>
 class Matrix
 {
 	public:
-		Matrix( int rows, int cols ) : array( rows )
+		Matrix(int rows, int cols) : A(rows)
 		{
-			for( auto & thisRow : array )
-				thisRow.resize( cols );
+			for(auto &row: A)
+				row.resize(cols);
 		}
 
-		Matrix( vector<vector<Object>> v ) : array( v ){ }
-		Matrix( vector<vector<Object>> && v ) : array( std::move( v ) ){ }
+		Matrix(vector<vector<T>> v) : A(v) {}
+		Matrix(vector<vector<T>> &&v) : A(std::move(v)) {}
 
-		const vector<Object> & operator[]( int row ) const
-			{ return array[ row ]; }
-		vector<Object> & operator[]( int row )
-			{ return array[ row ]; }
+		vector<T> &operator[](int row) { return A[row]; }
 		
-		int numrows() const
-			{ return array.size(); }
-		int numcols() const
-			{ return numrows() ? array[ 0 ].size() : 0; }
-
+		int numrows() const { return A.size(); }
+		int numcols() const { return numrows() ? A[0].size() : 0; }
 		
 	protected:	// Modified (from "private") to support inheritance
-		vector<vector<Object>> array;
+		vector<vector<T>> A;
 };
 #endif

@@ -1,44 +1,41 @@
-/**
- * @file gaussian.h
- * @author Caitrin Eaton (ceaton@ncf.edu)
- * @brief Interface for a gaussian class in support of gaussian mixture models (GMM).
- * @version 0.1
- * @date 2022-03-05
- * 
- * @copyright Copyright (c) 2022
- * 
- */
-#ifndef Gaussian_H
-#define Gaussian_H
+#ifndef GAUSSIAN_H
+#define GAUSSIAN_H
 
-#define _USE_MATH_DEFINES       // defines M_PI (double) and M_PIl (long)
 #include <math.h>
-#include <stdio.h>      /* printf, scanf, puts, NULL */
+#include <stdio.h>
+#include "BasisFunction.h"
 
-/**
- * @brief Gaussian representation using a mean, variance, and weight.
- */
-class Gaussian
+class Gaussian : public BasisFunction
 {
 	public:
-		explicit Gaussian( double mean_init=0.5, double variance_init=1.0, double weight_init=1.0/(2.0*M_PI) );
-		
+		explicit Gaussian(double weight=1.0, double mean=0.0, double std=1.0) : weight(weight), mean(mean), std(std) {}
+
+		double at(double x) override { return this->weight * exp(-pow(x - this->mean, 2) / (2 * pow(this->std, 2))); }
+	  
 		// accessors
-		double get_mean() const;
-		double get_variance() const;
-		double get_weight() const;
-		double get_height( double x ) const;
+    double get_weight() const { return this->weight; }
+		double get_mean() const { return this->mean; }
+		double get_std() const { return this->std; }
 
 		// mutators
-		void set_mean( double mean_new );
-		void set_variance( double variance_new );
-		void set_weight( double weight_new );
+		void set_weight(double weight) { this->weight = weight; }
+		void set_mean(double mean) { this->mean = mean; }
+		void set_std(double std) { this->std = std; }
 
-		// utilities
-		void display() const;
+    // to_string
+    void to_string() override
+    {
+      printf("\nGaussian object at location %p\n", this);
+      printf("\tweight\t= %.3f", this->weight);
+      printf("\tmean\t= %.3f", this->mean);
+      printf("\tstd\t= %.3f", this->std);
+      printf("\tg(x)\t= %.3f * exp(-(x - %.3f)^2 / (2 * %.3f^2))\n", this->weight, this->mean, this->std);
+    }
 
 	private:
-		double mean, variance, weight;
+    double weight;
+    double mean;
+    double std;
 };
 
 #endif

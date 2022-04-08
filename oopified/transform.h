@@ -9,14 +9,16 @@
  * 
  * @copyright Copyright (c) 2022
  */
+#ifndef TRANSFORM_H
+#define TRANSFORM_H
 
- #include "matrix.h"
+#include "matrix.h"
 
-class Transform : private Matrix
+class Transform : private Matrix<double>
 {
 	public:
 		// constructor
-		Transform( double alpha=0.0, double a=0.0, double d=0.0, double theta=0.0 );
+		Transform(double alpha=0.0, double a=0.0, double d=0.0, double theta=0.0);
 		
 		// accessors
 		double get_alpha();
@@ -30,16 +32,16 @@ class Transform : private Matrix
 		// TODO: vector<double> get_orientation(); // returns {roll, pitch, yaw}
 
 		// mutators
-		void set_theta( double theta );
-		void set_d( double d );
+		void set_theta(double theta);
+		void set_d(double d);
 
 		// utilities
-		void display();
-		const vector<vector<Object>> & operator*( double coefficient ) const;
-		vector<Object> & operator*( double coefficient );
-		const vector<Object> & operator*( Transform m ) const;
-		vector<Object> & operator*( Transform m );
+		void to_string();
+		Transform &operator*(double coefficient);
+		Transform &operator*(Transform m);
 
 	private:
 		double alpha, a, d, theta;
 };
+
+#endif
