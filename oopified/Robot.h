@@ -6,51 +6,49 @@
  * @date 2022-03-30
  * 
  * @copyright Copyright (c) 2022
- * 
  */
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include "MP.h"
 #include <vector>
+#include "MP.h"
+#include "dynamixel_helper.h"
 
 using std::vector;
 
-class Robot{
-    public:
-        //constructor
-        Robot( int numjoints );
+class Robot
+{
+public:
+	// Constructors
+	Robot(int nJoints, const DynamixelHelper& dxlHelper);
 
-        //getters
-        double getAlpha( int i );
-        double getA( int i );
-        double getD( int i );
+	// Actions
+	void playMPs(vector<MP> mps);
 
-        /**
-         * @brief Get the DH parameters for joint i
-         * 
-         * @param i (int) joint number
-         * @return (vector<double>) alphas[i-1], as[i-1], ds[i]
-         */
-        vector<double> getJointParams( int i );
+	// Getters
+	vector<int> getJointIDs();
+	vector<double> getAlphas();
+	vector<double> getAs();
+	vector<double> getDs();
+	vector<double> getThetas();
+	vector<double> getEndPosition();
 
-        //setters
-        void set_alphas( vector<double> alphas );
-        void setAs( vector<double> as );
-        void setDs( vector<double> ds );
+	// Setters
+	void setJointIDs(vector<int> jointIDs);
+	void setAlphas(vector<double> alphas);
+	void setAs(vector<double> as);
+	void setDs(vector<double> ds);
+	void setThetas(vector<double> thetas);
 
-        //other methods
-        void play( MP mp );
-        vector<double> fk();    //TODO paramaters??
-
-    private:
-        int numjoints;
-        vector<double> alphas;
-        vector<double> as;
-        vector<double> ds;
-        vector<double> joints_ids;
-
-        vector<double> position[3];     //current (x,y,z) position
+private:
+	DynamixelHelper dxlHelper;
+	int nJoints;
+	vector<int> jointIDs;
+	vector<double> alphas;
+	vector<double> as;
+	vector<double> ds;
+	vector<double> thetas;
+	vector<double> endPosition; // x, y, z
 };
 
 #endif

@@ -9,5 +9,5 @@ cmake --build .
 
 cd ../
 if [ ! -f "./compile_commands.json" ]; then
-    ln -s $PWD/build/compile_commands.json .
+    ln -s "$PWD/build/compile_commands.json" .
 fi

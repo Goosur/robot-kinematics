@@ -1,6 +1,7 @@
 #include <iostream>
-#include <math.h>
+#include <cmath>
 #include <vector>
+#include <unistd.h>
 
 #include "dynamixel_helper.h"
 #include "transform.h"
@@ -27,7 +28,8 @@ int main()
 	d_helper.openPort();
 	d_helper.setBaudrate(1000000);
 
-	while (true)
+	int count = 0;
+	while (count < 1000)
 	{
 		angles = d_helper.groupGetAngle(motor_ids, num_motors);
 		thetas = {angles[0], angles[1] - M_PI / 2, M_PI / 2, angles[2] - M_PI, angles[3] - M_PI / 2, angles[4], 0.0};
@@ -36,6 +38,9 @@ int main()
 		
 		// std::cout << angles[0] << "\t" << angles[1] << "\t" << angles[2] << "\t" << angles[3] << "\t" << angles[4] << std::endl;
 		std::cout << xyz[0] << "\t\t" << xyz[1] << "\t\t" << xyz[2] << "\t\t" << std::endl;
+
+		usleep(100);
+		count++;
 	}
 
 	return 0;

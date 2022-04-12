@@ -8,18 +8,21 @@
  * @copyright Copyright (c) 2022
  * 
  */
+#include <utility>
 #include <vector>
 
 #include "BasisFunction.h"
 
 using std::vector;
 
-class MP{
-    public:
-        MP();
+class MP
+{
+public:
+	MP(vector<BasisFunction> funcs);
 
-        double getFunc( int i );    // returns ??
+	vector<double> at(double phase);
+	vector<BasisFunction> getFuncs();
 
-    private:
-        vector<BasisFunction> funcs;  //get length from??
+private:
+	vector<BasisFunction> funcs;
 };
