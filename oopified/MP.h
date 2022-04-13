@@ -8,7 +8,9 @@
  * @copyright Copyright (c) 2022
  * 
  */
-#include <utility>
+#ifndef MP_H
+#define MP_H
+
 #include <vector>
 
 #include "BasisFunction.h"
@@ -18,11 +20,11 @@ using std::vector;
 class MP
 {
 public:
-	MP(vector<BasisFunction> funcs);
-
+	explicit MP(vector<BasisFunction*> funcs);
 	vector<double> at(double phase);
-	vector<BasisFunction> getFuncs();
-
+	vector<BasisFunction*> getFuncs();
 private:
-	vector<BasisFunction> funcs;
+	vector<BasisFunction*> funcs;
 };
+
+#endif

@@ -14,9 +14,9 @@
 
 class BasisFunction   //abstract class
 {
-    public:
-        virtual double at(double x) = 0;
-        virtual void to_string() = 0;
+public:
+    virtual double at(double x) = 0;
+    virtual void to_string() = 0;
 };
 
 #endif

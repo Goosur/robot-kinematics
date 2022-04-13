@@ -10,7 +10,7 @@ using std::vector;
 
 namespace FK
 {
-	vector<double> get_gripper_coords(int n_frames, vector<double> alphas, vector<double> as, vector<double> ds, vector<double> thetas)
+	static vector<double> get_gripper_coords(int n_frames, vector<double> alphas, vector<double> as, vector<double> ds, vector<double> thetas)
 	{
 		Transform T_0N = Transform(alphas[0], as[0], ds[0], thetas[0]);
 
