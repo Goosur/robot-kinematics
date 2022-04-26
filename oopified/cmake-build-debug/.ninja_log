@@ -1,0 +1,12 @@
+# ninja log v5
+453	515	1649821684814805663	RobotControl	6ad1468074999f72
+0	453	1649821684754805661	CMakeFiles/RobotControl.dir/main.cpp.o	707be4f57792ef86
+0	16	1649821734484807846	build.ninja	b8d68a93a37a684d
+1	315	1649819294501366633	CMakeFiles/RobotControl.dir/gmm.cpp.o	4d473cd2b63c93f6
+1	442	1649702501043012064	CMakeFiles/main.dir/main.cpp.o	c0cad769288d7169
+1	379	1649821654428137658	CMakeFiles/RobotControl.dir/Robot.cpp.o	79b02dd686828da3
+1	383	1649819998611397805	CMakeFiles/RobotControl.dir/transform.cpp.o	9e7172d8839b13b1
+442	490	1649702501089678731	main	8c4769bc0d3bd23d
+1	412	1649702482716345326	CMakeFiles/main.dir/gmm.cpp.o	21a704eb043d3a62
+0	444	1649702482749678659	CMakeFiles/main.dir/transform.cpp.o	e1a4be3e1fd13170
+1	112	1649819664198049697	CMakeFiles/RobotControl.dir/MP.cpp.o	17eb93d9366eafa4

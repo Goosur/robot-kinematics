@@ -13,7 +13,8 @@ DynamixelHelper::~DynamixelHelper()
 {
     this->portHandler->closePort();
     delete this->portHandler;
-    delete this->packetHandler; }
+    delete this->packetHandler;
+}
 
 void DynamixelHelper::openPort()
 {
@@ -59,22 +60,38 @@ void DynamixelHelper::torqueDisable(uint8_t id)
     std::clog << "[ID: " << (int)id << "] Torque Disabled" << std::endl;
 }
 
-void DynamixelHelper::groupTorqueEnable(uint8_t* ids, size_t ids_size)
+void DynamixelHelper::groupTorqueEnable(vector<uint8_t> ids)
 {
-    uint32_t data[ids_size];
-    for (int i = 0; i < (int)ids_size; i++)
+    // Convert ids vector into basic array for low level dynamixel communication
+    auto *ids_array = new uint8_t[ids.size()];
+    for (int i = 0; i < ids.size(); i++)
+        ids_array[i] = ids[i];
+
+    uint32_t data[ids.size()];
+    for (int i = 0; i < ids.size(); i++)
         data[i] = 1;
 
-    this->groupWriteMotor(ids, ids_size, data, 64, 1);
+    this->groupWriteMotor(ids_array, ids.size(), data, 64, 1);
+
+    // Clean up
+    delete[] ids_array;
 }
 
-void DynamixelHelper::groupTorqueDisable(uint8_t* ids, size_t ids_size)
+void DynamixelHelper::groupTorqueDisable(vector<uint8_t> ids)
 {
-    uint32_t data[ids_size];
-    for (int i = 0; i < (int)ids_size; i++)
+    // Convert ids vector into basic array for low level dynamixel communication
+    auto *ids_array = new uint8_t[ids.size()];
+    for (int i = 0; i < ids.size(); i++)
+        ids_array[i] = ids[i];
+
+    uint32_t data[ids.size()];
+    for (int i = 0; i < ids.size(); i++)
         data[i] = 0;
 
-    this->groupWriteMotor(ids, ids_size, data, 64, 1);
+    this->groupWriteMotor(ids_array, ids.size(), data, 64, 1);
+
+    // Clean up
+    delete[] ids_array;
 }
 
 void DynamixelHelper::setAngle(uint8_t id, double val)
@@ -87,22 +104,35 @@ double DynamixelHelper::getAngle(uint8_t id)
     return readMotor(id, 132) * 0.088 * M_PI / 180.0;
 }
 
-void DynamixelHelper::groupSetAngle(uint8_t* ids, size_t ids_size, double* vals)
+void DynamixelHelper::groupSetAngle(vector<uint8_t> ids, vector<double> vals)
 {
-    uint32_t data[ids_size];
+    // Convert ids vector into basic array for low level dynamixel communication
+    auto *ids_array = new uint8_t[ids.size()];
+    for (int i = 0; i < ids.size(); i++)
+        ids_array[i] = ids[i];
 
-    for (int i = 0; i < (int)ids_size; i++)
+    uint32_t data[ids.size()];
+
+    for (int i = 0; i < ids.size(); i++)
         data[i] = (uint32_t)(vals[i] * 180.0 / M_PI / 0.088);
 
-    groupWriteMotor(ids, ids_size, data, 116, 4);
+    groupWriteMotor(ids_array, ids.size(), data, 116, 4);
+
+    // Clean up
+    delete[] ids_array;
 }
 
-double* DynamixelHelper::groupGetAngle(uint8_t* ids, size_t ids_size)
+vector<double> DynamixelHelper::groupGetAngle(vector<uint8_t> ids)
 {
-    uint32_t* retrieved_data = groupReadMotor(ids, ids_size, 132, 4);
-    double *present_positions = new double[ids_size];
-    for (int i = 0; i < (int)ids_size; i++)
-        present_positions[i] = retrieved_data[i] * 0.088 * M_PI / 180.0;
+    // Convert ids vector into basic array for low level dynamixel communication
+    auto *ids_array = new uint8_t[ids.size()];
+    for (int i = 0; i < ids.size(); i++)
+        ids_array[i] = ids[i];
+
+    uint32_t* retrieved_data = groupReadMotor(ids_array, ids.size(), 132, 4);
+    vector<double> present_positions;
+    for (int i = 0; i < ids.size(); i++)
+        present_positions.push_back(retrieved_data[i] * 0.088 * M_PI / 180.0);
 
     return present_positions;
 }
