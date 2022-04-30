@@ -5,27 +5,28 @@ import numpy as np
 import sympy as sp
 
 
-def jacobian(theta1, theta2, theta4, theta5, theta6):
+# [theta1, theta2, theta4, theta5, theta6]
+def jacobian(thetas):
     return np.array([
         [
-            (-200.0*np.sin(theta2) - 50.0*np.cos(theta2) + 200.0*np.cos(theta2 + theta4) - 174.15*np.cos(theta2 + theta4 + theta5))*np.sin(theta1),
-            (-50.0*np.sin(theta2) + 200.0*np.sin(theta2 + theta4) - 174.15*np.sin(theta2 + theta4 + theta5) + 200.0*np.cos(theta2))*np.cos(theta1),
-            (200.0*np.sin(theta2 + theta4) - 174.15*np.sin(theta2 + theta4 + theta5))*np.cos(theta1),
-            -174.15*np.sin(theta2 + theta4 + theta5)*np.cos(theta1),
+            (-200.0*np.sin(thetas[1]) - 50.0*np.cos(thetas[1]) + 200.0*np.cos(thetas[1] + thetas[2]) - 174.15*np.cos(thetas[1] + thetas[2] + thetas[3]))*np.sin(thetas[0]),
+            (-50.0*np.sin(thetas[1]) + 200.0*np.sin(thetas[1] + thetas[2]) - 174.15*np.sin(thetas[1] + thetas[2] + thetas[3]) + 200.0*np.cos(thetas[1]))*np.cos(thetas[0]),
+            (200.0*np.sin(thetas[1] + thetas[2]) - 174.15*np.sin(thetas[1] + thetas[2] + thetas[3]))*np.cos(thetas[0]),
+            -174.15*np.sin(thetas[1] + thetas[2] + thetas[3])*np.cos(thetas[0]),
             0
         ],
         [
-            (200.0*np.sin(theta2) + 50.0*np.cos(theta2) - 200.0*np.cos(theta2 + theta4) + 174.15*np.cos(theta2 + theta4 + theta5))*np.cos(theta1),
-            (-50.0*np.sin(theta2) + 200.0*np.sin(theta2 + theta4) - 174.15*np.sin(theta2 + theta4 + theta5) + 200.0*np.cos(theta2))*np.sin(theta1),
-            (200.0*np.sin(theta2 + theta4) - 174.15*np.sin(theta2 + theta4 + theta5))*np.sin(theta1),
-            -174.15*np.sin(theta1)*np.sin(theta2 + theta4 + theta5),
+            (200.0*np.sin(thetas[1]) + 50.0*np.cos(thetas[1]) - 200.0*np.cos(thetas[1] + thetas[2]) + 174.15*np.cos(thetas[1] + thetas[2] + thetas[3]))*np.cos(thetas[0]),
+            (-50.0*np.sin(thetas[1]) + 200.0*np.sin(thetas[1] + thetas[2]) - 174.15*np.sin(thetas[1] + thetas[2] + thetas[3]) + 200.0*np.cos(thetas[1]))*np.sin(thetas[0]),
+            (200.0*np.sin(thetas[1] + thetas[2]) - 174.15*np.sin(thetas[1] + thetas[2] + thetas[3]))*np.sin(thetas[0]),
+            -174.15*np.sin(thetas[0])*np.sin(thetas[1] + thetas[2] + thetas[3]),
             0
         ],
         [
             0,
-            200.0*np.sin(theta2) + 50.0*np.cos(theta2) - 200.0*np.cos(theta2 + theta4) + 174.15*np.cos(theta2 + theta4 + theta5),
-            -200.0*np.cos(theta2 + theta4) + 174.15*np.cos(theta2 + theta4 + theta5),
-            174.15*np.cos(theta2 + theta4 + theta5),
+            200.0*np.sin(thetas[1]) + 50.0*np.cos(thetas[1]) - 200.0*np.cos(thetas[1] + thetas[2]) + 174.15*np.cos(thetas[1] + thetas[2] + thetas[3]),
+            -200.0*np.cos(thetas[1] + thetas[2]) + 174.15*np.cos(thetas[1] + thetas[2] + thetas[3]),
+            174.15*np.cos(thetas[1] + thetas[2] + thetas[3]),
             0
         ],
         [0, 0, 0, 0, 1],
@@ -53,11 +54,41 @@ def fk_wx200(thetas):
         [0, 0, 174.15, 0]
     ]
 
-    T = fk_transform(dh[0][0], dh[0][1], dh[0][2], dh[0][3])
+    t = fk_transform(dh[0][0], dh[0][1], dh[0][2], dh[0][3])
     for i in range(1, 7):
-        T = T @ fk_transform(dh[i][0], dh[i][1], dh[i][2], dh[i][3])
+        t = t @ fk_transform(dh[i][0], dh[i][1], dh[i][2], dh[i][3])
 
-    return [T[0, 3], T[1, 3], T[2, 3]]
+    return [t[0, 3], t[1, 3], t[2, 3]]
+
+
+def inverse_kinematics(current_thetas, goal_pose):
+    new_thetas = current_thetas[:]
+
+    x_max = np.array([0.01, 0.01, 0.01, 0.001, 0.001], dtype="float64")
+    x_max *= 10
+
+    gripper_position = fk_wx200(current_thetas)
+    # TODO: figure out how to generate current orientation from known
+    #       information
+    current_pose = np.array([*gripper_position, 0, 0], dtype="float64")
+
+    # STEP 1
+    total_linear_change = goal_pose - current_pose
+
+    # STEP 2
+    current_linear_change = (total_linear_change / np.linalg.norm(total_linear_change)) * x_max
+
+    # STEP 3
+    j = jacobian(current_thetas)
+    jdet = np.linalg.det(j)
+
+    if abs(jdet) > 0.01:
+        rotational_change = (np.linalg.inv(j) @ current_linear_change)
+        # Update thetas to new position
+        new_thetas = current_thetas + rotational_change
+        return new_thetas, jdet, rotational_change[3], rotational_change[4]
+
+    return new_thetas, jdet
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -67,36 +98,57 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphWidget = pg.PlotWidget()
         self.setCentralWidget(self.graphWidget)
 
-        self.t1 = []
-        self.t2 = []
-        self.t4 = []
-        self.t5 = []
-        self.t6 = []
-        self.jdets = []
-        self.x = [0]
-        self.y = [0]
-        self.z = []
-        self.roll = []
-        self.pitch = []
+        # self.goal_pose = np.array([156.625, 0.0, 313.15, 0, 0], dtype="float64")
+        self.goal_pose = np.array([0.0, 0.0, 737.4, 0, 0], dtype="float64")
+
+        self.t1, self.t2, self.t4, self.t5, self.t6 = [np.pi], [np.pi], [np.pi], [np.pi], [np.pi]
+        self.jdets = [abs(np.linalg.det(jacobian(self.t1 + self.t2 + self.t4 + self.t5 + self.t6)))]
+        self.x, self.y, self.z = ([e] for e in fk_wx200(self.t1 + self.t2 + self.t4 + self.t5 + self.t6))
+        self.roll, self.pitch = [0], [0]
         self.frames = [0]
 
-        self.x_line = self.graphWidget.plot(self.frames, self.x, pen=pg.mkPen('g'))
-        self.y_line = self.graphWidget.plot(self.frames, self.y, pen=pg.mkPen('c'))
+        # Motor graph
+        self.t1_line = self.graphWidget.plot(self.frames, self.t1, pen=pg.mkPen('b'))
+        self.t2_line = self.graphWidget.plot(self.frames, self.t2, pen=pg.mkPen('g'))
+        self.t4_line = self.graphWidget.plot(self.frames, self.t4, pen=pg.mkPen('r'))
+        self.t5_line = self.graphWidget.plot(self.frames, self.t5, pen=pg.mkPen('c'))
+        self.t6_line = self.graphWidget.plot(self.frames, self.t6, pen=pg.mkPen('m'))
 
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(10)
+        self.timer.setInterval(1)
         self.timer.timeout.connect(self.update_plot_data)
         self.timer.start()
 
     def update_plot_data(self):
         self.frames.append(self.frames[-1] + 1)
-        self.x.append(self.frames[-1]**2)
-        self.y.append(self.frames[-1])
-        self.x_line.setData(self.frames, self.x)
-        self.y_line.setData(self.frames, self.y)
+        new_thetas, new_jdet, droll, dpitch = inverse_kinematics([self.t1[-1], self.t2[-1], self.t4[-1], self.t5[-1], self.t6[-1]],
+                                                                 self.goal_pose)
+        self.t1.append(new_thetas[0])
+        self.t2.append(new_thetas[1])
+        self.t4.append(new_thetas[2])
+        self.t5.append(new_thetas[3])
+        self.t6.append(new_thetas[4])
+        self.jdets.append(abs(new_jdet))
+        new_xyz = fk_wx200([self.t1[-1], self.t2[-1], self.t4[-1], self.t5[-1], self.t6[-1]])
+        self.x.append(new_xyz[0])
+        self.y.append(new_xyz[1])
+        self.z.append(new_xyz[2])
+        self.roll.append(self.roll[-1] + droll)
+        self.pitch.append(self.pitch[-1] + dpitch)
+
+        self.t1_line.setData(self.frames, self.t1)
+        self.t2_line.setData(self.frames, self.t2)
+        self.t4_line.setData(self.frames, self.t4)
+        self.t5_line.setData(self.frames, self.t5)
+        self.t6_line.setData(self.frames, self.t6)
 
 
-app = QtWidgets.QApplication(sys.argv)
-w = MainWindow()
-w.show()
-sys.exit(app.exec())
+def main(argv):
+    app = QtWidgets.QApplication(argv)
+    w = MainWindow()
+    w.show()
+    sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main(sys.argv)
