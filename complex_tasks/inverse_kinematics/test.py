@@ -95,8 +95,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
-        self.graphWidget = pg.PlotWidget()
-        self.setCentralWidget(self.graphWidget)
+        self.graphicsWindow = pg.GraphicsLayoutWidget()
+        self.setCentralWidget(self.graphicsWindow)
+
+        self.joint_plot = self.graphicsWindow.addPlot(row=0, col=0)
+        # self.det_plot = self.graphicsWindow.addPlot(row=0, col=1)
 
         # self.goal_pose = np.array([156.625, 0.0, 313.15, 0, 0], dtype="float64")
         self.goal_pose = np.array([0.0, 0.0, 737.4, 0, 0], dtype="float64")
@@ -108,11 +111,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.frames = [0]
 
         # Motor graph
-        self.t1_line = self.graphWidget.plot(self.frames, self.t1, pen=pg.mkPen('b'))
-        self.t2_line = self.graphWidget.plot(self.frames, self.t2, pen=pg.mkPen('g'))
-        self.t4_line = self.graphWidget.plot(self.frames, self.t4, pen=pg.mkPen('r'))
-        self.t5_line = self.graphWidget.plot(self.frames, self.t5, pen=pg.mkPen('c'))
-        self.t6_line = self.graphWidget.plot(self.frames, self.t6, pen=pg.mkPen('m'))
+        self.t1_line = self.joint_plot.plot(self.frames, self.t1, pen=pg.mkPen('b'))
+        self.t2_line = self.joint_plot.plot(self.frames, self.t2, pen=pg.mkPen('g'))
+        self.t4_line = self.joint_plot.plot(self.frames, self.t4, pen=pg.mkPen('r'))
+        self.t5_line = self.joint_plot.plot(self.frames, self.t5, pen=pg.mkPen('c'))
+        self.t6_line = self.joint_plot.plot(self.frames, self.t6, pen=pg.mkPen('m'))
+        # self.det_line = self.det_plot.plot(self.frames, self.jdets, pen=pg.mkPen('y'))
 
         self.timer = QtCore.QTimer()
         self.timer.setInterval(1)
@@ -141,6 +145,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.t4_line.setData(self.frames, self.t4)
         self.t5_line.setData(self.frames, self.t5)
         self.t6_line.setData(self.frames, self.t6)
+        # self.det_plot.setData(self.frames, self.jdets)
 
 
 def main(argv):
