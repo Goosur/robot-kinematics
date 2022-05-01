@@ -99,6 +99,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(self.graphicsWindow)
 
         self.joint_plot = self.graphicsWindow.addPlot(row=0, col=0)
+        self.joint_plot.addLegend()
         # self.det_plot = self.graphicsWindow.addPlot(row=0, col=1)
 
         # self.goal_pose = np.array([156.625, 0.0, 313.15, 0, 0], dtype="float64")
@@ -111,12 +112,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.frames = [0]
 
         # Motor graph
-        self.t1_line = self.joint_plot.plot(self.frames, self.t1, pen=pg.mkPen('b'))
-        self.t2_line = self.joint_plot.plot(self.frames, self.t2, pen=pg.mkPen('g'))
-        self.t4_line = self.joint_plot.plot(self.frames, self.t4, pen=pg.mkPen('r'))
-        self.t5_line = self.joint_plot.plot(self.frames, self.t5, pen=pg.mkPen('c'))
-        self.t6_line = self.joint_plot.plot(self.frames, self.t6, pen=pg.mkPen('m'))
-        # self.det_line = self.det_plot.plot(self.frames, self.jdets, pen=pg.mkPen('y'))
+        self.t1_line = self.joint_plot.plot(self.frames, self.t1, pen='b', name="Waist")
+        self.t2_line = self.joint_plot.plot(self.frames, self.t2, pen='g', name="Shoulder")
+        self.t4_line = self.joint_plot.plot(self.frames, self.t4, pen='r', name="Elbow")
+        self.t5_line = self.joint_plot.plot(self.frames, self.t5, pen='c', name="Wrist Roll")
+        self.t6_line = self.joint_plot.plot(self.frames, self.t6, pen='m', name="Wrist Pitch")
+        # self.det_line = self.det_plot.plot(self.frames, self.jdets, 'y')
 
         self.timer = QtCore.QTimer()
         self.timer.setInterval(1)
