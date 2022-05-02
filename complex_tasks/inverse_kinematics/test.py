@@ -95,13 +95,26 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
-        self.graphicsWindow = pg.GraphicsLayoutWidget()
-        self.setCentralWidget(self.graphicsWindow)
+        self.canvas = pg.GraphicsLayoutWidget()
+        self.setCentralWidget(self.canvas)
 
-        self.joint_plot = self.graphicsWindow.addPlot(row=0, col=0)
+        # Create subplot for joint angles
+        self.joint_plot = self.canvas.addPlot(row=0, col=0)
+        # Label joint angles plot
         self.joint_plot.addLegend()
-        # self.det_plot = self.graphicsWindow.addPlot(row=0, col=1)
+        self.joint_plot.getAxis("left").setLabel("Joint Angle (radians)")
+        self.joint_plot.getAxis("bottom").setStyle(showValues=False)
 
+        # Create subplot for jacobian determinant
+        self.det_plot = self.canvas.addPlot(row=1, col=0)
+        # Label jacobian determinant plot
+        self.det_plot.getAxis("bottom").setLabel("Time (steps)")
+        self.det_plot.setXLink(self.joint_plot)
+
+        # Create subplot for end effector position
+        self.end_effector_plot = self.canvas.addPlot(row=0, col=1, rowspan=2)
+
+        # Goal position
         # self.goal_pose = np.array([156.625, 0.0, 313.15, 0, 0], dtype="float64")
         self.goal_pose = np.array([0.0, 0.0, 737.4, 0, 0], dtype="float64")
 
@@ -117,7 +130,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.t4_line = self.joint_plot.plot(self.frames, self.t4, pen='r', name="Elbow")
         self.t5_line = self.joint_plot.plot(self.frames, self.t5, pen='c', name="Wrist Roll")
         self.t6_line = self.joint_plot.plot(self.frames, self.t6, pen='m', name="Wrist Pitch")
-        # self.det_line = self.det_plot.plot(self.frames, self.jdets, 'y')
+        self.det_line = self.det_plot.plot(self.frames, self.jdets, 'y')
 
         self.timer = QtCore.QTimer()
         self.timer.setInterval(1)
@@ -146,7 +159,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.t4_line.setData(self.frames, self.t4)
         self.t5_line.setData(self.frames, self.t5)
         self.t6_line.setData(self.frames, self.t6)
-        # self.det_plot.setData(self.frames, self.jdets)
+        self.det_line.setData(self.frames, self.jdets)
 
 
 def main(argv):
