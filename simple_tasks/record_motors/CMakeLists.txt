@@ -4,7 +4,8 @@ cmake_minimum_required(VERSION 3.18)
 project(record_motors)
 
 # Add project executable
-add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
+add_executable(${PROJECT_NAME}
+  record_motors.cpp)
 
 # Link shared libraries
 link_directories(/usr/local/lib)

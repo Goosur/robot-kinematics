@@ -5,37 +5,40 @@
 #include "dynamixel_helper.h"
 
 int main(int argc, char** argv) {
-
-    // File to store angles
+    // Open file for writing with user defined file name
     std::ofstream f;
     f.open(argv[1]);
+
     // Write headers for motors
     f << "waist,shoulder,elbow,wrist_angle,wrist_rotate" << std::endl;
 
+    // Initialize dynamixel helper
     const char port[] = "/dev/ttyUSB0";
     DynamixelHelper dynamixelHelper(port);
 
-    uint8_t motor_ids[] = {1, 2, 4, 5, 6};
-    size_t ids_size = sizeof(motor_ids) / sizeof(motor_ids[0]);
-    double *motor_positions;
+    vector<uint8_t> motor_ids{1, 2, 4, 5, 6};
+    vector<double> current_joint_angles;
 
     dynamixelHelper.openPort();
     dynamixelHelper.setBaudrate(1000000);
 
-    while(true)
+    int time_step = 0;
+    while(time_step < 1000)
     {
-        motor_positions = dynamixelHelper.groupGetAngle(motor_ids, ids_size);
+        current_joint_angles = dynamixelHelper.groupGetAngle(motor_ids);
 
-        for (int i = 0; i < (int)ids_size; i++)
+        for (int i = 0; i < motor_ids.size(); i++)
         {
-            std::cout << motor_positions[i] << "\t";
-            if (i != (int)ids_size - 1)
-                f << motor_positions[i] << ",";
+            std::cout << current_joint_angles[i] << "\t";
+            if (i != motor_ids.size() - 1)
+                f << current_joint_angles[i] << ",";
             else
-                f << motor_positions[i];
+                f << current_joint_angles[i];
         }
         f << std::endl;
         std::cout << std::endl;
+
+        time_step++;
     }
 
     f.close();

@@ -8,15 +8,15 @@ add_executable(${PROJECT_NAME}
   main.cpp
   Robot.h
   Robot.cpp
-  transform.h
-  transform.cpp
   BasisFunction.h
   gaussian.h
   gmm.h
   gmm.cpp
   MP.h
   MP.cpp
-)
+  ik.h
+  fk.h
+  fk.cpp)
 
 # Link shared libraries
 link_directories(/usr/local/lib)
@@ -25,6 +25,7 @@ link_directories(/usr/local/lib)
 include_directories(
   /usr/local/include/dynamixel_sdk
   /usr/local/include/DynamixelHelper
+  /usr/local/include/eigen3
 )
 
 # Link libraries to project

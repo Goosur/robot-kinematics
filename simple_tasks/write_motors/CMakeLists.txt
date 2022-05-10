@@ -5,7 +5,6 @@ project(write_motors)
 
 # Add project executable
 add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
-
 # Link shared libraries
 link_directories(/usr/local/lib)
 

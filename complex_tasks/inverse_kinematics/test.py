@@ -64,13 +64,11 @@ def fk_wx200(thetas):
 def inverse_kinematics(current_thetas, goal_pose):
     new_thetas = current_thetas[:]
 
-    x_max = np.array([0.01, 0.01, 0.01, 0.001, 0.001], dtype="float64")
-    x_max *= 50
+    x_max = np.array([0.01, 0.01, 0.01, 0.01, 0.01], dtype="float64")
+    # x_max *= 50
 
     gripper_position = fk_wx200(current_thetas)
-    # TODO: figure out how to generate current orientation from known
-    #       information
-    current_pose = np.array([*gripper_position, 0, 0], dtype="float64")
+    current_pose = np.array([*gripper_position, current_thetas[4] - np.pi, current_thetas[1] + current_thetas[2] + current_thetas[3] - 3*np.pi], dtype="float64")
 
     # STEP 1
     total_linear_change = goal_pose - current_pose
@@ -83,15 +81,10 @@ def inverse_kinematics(current_thetas, goal_pose):
     jdet = np.linalg.det(j)
 
     # CHANGED THIS TO 15000 BECAUSE DETERMINANT IS BIG WHEN IT SPAZZES
-    if abs(jdet) > 15000:
+    if abs(jdet) > 1:
         rotational_change = (np.linalg.inv(j) @ current_linear_change)
         # Update thetas to new position
-        print(np.shape(rotational_change))
-
         new_thetas = current_thetas + rotational_change
-        # TODO: THIS IS WRONG, rotational_change = [t1_new, t2_new, t4_new, t5_new, t6_new]
-        #       It does not contain any orientation data
-        return new_thetas, jdet, rotational_change[3], rotational_change[4]
 
     return new_thetas, jdet
 
@@ -112,77 +105,101 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Create subplot for jacobian determinant
         self.det_plot = self.canvas.addPlot(row=1, col=0)
-        # Label jacobian determinant plot
+        self.det_plot.addLegend()
         self.det_plot.getAxis("bottom").setLabel("Time (steps)")
         self.det_plot.setXLink(self.joint_plot)
 
-        # Create subplot for end effector position
-        self.end_effector_plot = self.canvas.addPlot(row=0, col=1, rowspan=2)
-        self.end_effector_plot.addLegend()
-        self.end_effector_plot.getAxis("bottom").setLabel("Time (steps)")
-        self.end_effector_plot.getAxis("left").setLabel("Position (mm)")
-        self.end_effector_plot.setXLink(self.joint_plot)
+        # Create subplot for end effector orientation
+        self.orientation_plot = self.canvas.addPlot(row=0, col=1)
+        self.orientation_plot.addLegend()
+        self.orientation_plot.getAxis("bottom").setStyle(showValues=False)
+        self.orientation_plot.getAxis("left").setLabel("End Effector Orientation (radians)")
+        self.orientation_plot.setXLink(self.joint_plot)
 
-        # Goal position
+        # Create subplot for end effector position
+        self.position_plot = self.canvas.addPlot(row=1, col=1)
+        self.position_plot.addLegend()
+        self.position_plot.getAxis("bottom").setLabel("Time (steps)")
+        self.position_plot.getAxis("left").setLabel("Position (mm)")
+        self.position_plot.setXLink(self.joint_plot)
+
+        # Goal positions
         # self.goal_pose = np.array([156.625, 0.0, 313.15, 0, 0], dtype="float64")
         # self.goal_pose = np.array([0.0, 0.0, 737.4, 0, 0], dtype="float64")
-        self.goal_pose = np.array([0.0, 0.0, 600.0, 0, -np.pi/2], dtype="float64")
+        self.goal_pose = np.array([0.0, 0.0, 600.0, np.pi/2, -np.pi/2], dtype="float64")
 
         self.t1, self.t2, self.t4, self.t5, self.t6 = [np.pi], [np.pi], [np.pi], [np.pi], [np.pi]
         self.jdets = [abs(np.linalg.det(jacobian(self.t1 + self.t2 + self.t4 + self.t5 + self.t6)))]
         xyz_init = fk_wx200(self.t1 + self.t2 + self.t4 + self.t5 + self.t6)
         self.x_pos, self.y_pos, self.z_pos = [float(xyz_init[0])], [float(xyz_init[1])], [float(xyz_init[2])]
-        self.roll, self.pitch = [0], [0]
+        self.roll = [self.t6[-1] - np.pi]
+        self.pitch = [self.t2[-1] + self.t4[-1] + self.t5[-1] - 3*np.pi]
         self.frames = [0]
-
-        # Motor graph
+        # Joint angles graph
         self.t1_line = self.joint_plot.plot(self.frames, self.t1, pen='b', name="Waist")
         self.t2_line = self.joint_plot.plot(self.frames, self.t2, pen='g', name="Shoulder")
         self.t4_line = self.joint_plot.plot(self.frames, self.t4, pen='r', name="Elbow")
-        self.t5_line = self.joint_plot.plot(self.frames, self.t5, pen='c', name="Wrist Roll")
-        self.t6_line = self.joint_plot.plot(self.frames, self.t6, pen='m', name="Wrist Pitch")
-
+        self.t5_line = self.joint_plot.plot(self.frames, self.t5, pen='c', name="Wrist Pitch")
+        self.t6_line = self.joint_plot.plot(self.frames, self.t6, pen='m', name="Wrist Roll")
         # Jacobian determinant graph
         self.det_line = self.det_plot.plot(self.frames, self.jdets, 'y', name="Determinant")
-
         # End effector position graph
-        self.x_line = self.end_effector_plot.plot(self.frames, self.x_pos, pen='r', name="X")
-        self.y_line = self.end_effector_plot.plot(self.frames, self.y_pos, pen='g', name="Y")
-        self.z_line = self.end_effector_plot.plot(self.frames, self.z_pos, pen='b', name="Z")
+        self.x_line = self.position_plot.plot(self.frames, self.x_pos, pen='r', name="X")
+        self.y_line = self.position_plot.plot(self.frames, self.y_pos, pen='g', name="Y")
+        self.z_line = self.position_plot.plot(self.frames, self.z_pos, pen='b', name="Z")
+        # End effector orientation graph
+        self.roll_line = self.orientation_plot.plot(self.frames, self.roll, pen='c', name="Roll")
+        self.pitch_line = self.orientation_plot.plot(self.frames, self.pitch, pen='m', name="Pitch")
 
+        # Create and begin the timer for redrawing the pyqtgraph plots which simulates animation.
         self.timer = QtCore.QTimer()
         self.timer.setInterval(1)
         self.timer.timeout.connect(self.update_plot_data)
         self.timer.start()
 
     def update_plot_data(self):
+        # Increment the number of simulated time steps
         self.frames.append(self.frames[-1] + 1)
-        new_thetas, new_jdet, droll, dpitch = inverse_kinematics([self.t1[-1], self.t2[-1], self.t4[-1], self.t5[-1], self.t6[-1]],
-                                                                 self.goal_pose)
+        # Compute the next set of joint angles with inverse kinematics
+        new_thetas, new_jdet = inverse_kinematics(
+            # Current thetas
+            [self.t1[-1], self.t2[-1], self.t4[-1], self.t5[-1], self.t6[-1]],
+            # Goal x, y, z, roll, pitch
+            self.goal_pose
+        )
+        # Add the new thetas to the list of simulated thetas for plotting
         self.t1.append(new_thetas[0])
         self.t2.append(new_thetas[1])
         self.t4.append(new_thetas[2])
         self.t5.append(new_thetas[3])
         self.t6.append(new_thetas[4])
+        # Add the new determinant to the list of simulated determinants for plotting
         self.jdets.append(abs(new_jdet))
+        # Get new end effector position from new thetas
         new_xyz = fk_wx200([self.t1[-1], self.t2[-1], self.t4[-1], self.t5[-1], self.t6[-1]])
+        # Add the new xyz positions to the list of simulated xyz positions for plotting
         self.x_pos.append(float(new_xyz[0]))
         self.y_pos.append(float(new_xyz[1]))
         self.z_pos.append(float(new_xyz[2]))
-        self.roll.append(self.roll[-1] + droll)
-        self.pitch.append(self.pitch[-1] + dpitch)
+        # Compute the new roll and pitch from the new thetas and add them to the lists of simulated rolls and pitches
+        # for plotting
+        self.roll.append(new_thetas[4] - np.pi)
+        self.pitch.append(new_thetas[1] + new_thetas[2] + new_thetas[3] - 3*np.pi)
 
+        # Update the joint angles plot
         self.t1_line.setData(self.frames, self.t1)
         self.t2_line.setData(self.frames, self.t2)
         self.t4_line.setData(self.frames, self.t4)
         self.t5_line.setData(self.frames, self.t5)
-        self.t6_line.setData(self.frames, self.t6)
-
+        # Update the determinant plot
         self.det_line.setData(self.frames, self.jdets)
-
+        # Update the position plot
         self.x_line.setData(self.frames, self.x_pos)
         self.y_line.setData(self.frames, self.y_pos)
         self.z_line.setData(self.frames, self.z_pos)
+        # Update the orientation plot
+        self.roll_line.setData(self.frames, self.roll)
+        self.pitch_line.setData(self.frames, self.pitch)
 
 
 def main(argv):
