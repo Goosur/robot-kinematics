@@ -1,11 +1,8 @@
 #include <cmath>
 #include <unistd.h>
 #include <termios.h>
-
 #include <iostream>
-#include <math.h>
 
-#include "dynamixel_sdk.h"
 #include "dynamixel_helper.h"
 
 // Get character input
@@ -43,8 +40,8 @@ int main() {
     bool index = 0;
     while (true)
     {
-        std::cout << "Press any key to continue. (Press [ESC] to exit)" << std::endl;
-        if (getch() == 0x1b)
+        std::cout << "Press any key to continue. (Press q to exit)" << std::endl;
+        if (getch() == 0x71)
             break;
 
         // Write goal position
