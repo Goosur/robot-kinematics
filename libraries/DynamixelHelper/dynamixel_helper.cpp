@@ -1,7 +1,6 @@
 #include "dynamixel_helper.h"
-#include <cstdlib>
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 DynamixelHelper::DynamixelHelper(const char *port)
 {

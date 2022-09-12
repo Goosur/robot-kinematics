@@ -1,7 +1,8 @@
 #ifndef DYNAMIXEL_HELPER_H
 #define DYNAMIXEL_HELPER_H
 
-#include "dynamixel_sdk.h"
+#include <dynamixel_sdk/dynamixel_sdk.h>
+#include <cstdint>
 #include <vector>
 
 using std::vector;
