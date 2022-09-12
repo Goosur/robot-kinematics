@@ -3,9 +3,7 @@
 #include <termios.h>
 
 #include <iostream>
-
-#include "dynamixel_sdk.h"
-#include "dynamixel_helper.h"
+#include <dynamixel_helper.h>
 
 // Get character input
 int getch() {
