@@ -1,3 +1,0 @@
-/home/devon/repos/robot-kinematics/simple_tasks/write_motor/cmake-build-debug/CMakeFiles/write_motor.dir
-/home/devon/repos/robot-kinematics/simple_tasks/write_motor/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/devon/repos/robot-kinematics/simple_tasks/write_motor/cmake-build-debug/CMakeFiles/rebuild_cache.dir

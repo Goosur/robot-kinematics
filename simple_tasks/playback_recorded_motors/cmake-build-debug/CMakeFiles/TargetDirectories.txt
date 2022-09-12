@@ -1,3 +1,0 @@
-/home/devon/repos/robot-kinematics/simple_tasks/playback_recorded_motors/cmake-build-debug/CMakeFiles/playback_recorded_motors.dir
-/home/devon/repos/robot-kinematics/simple_tasks/playback_recorded_motors/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/devon/repos/robot-kinematics/simple_tasks/playback_recorded_motors/cmake-build-debug/CMakeFiles/rebuild_cache.dir

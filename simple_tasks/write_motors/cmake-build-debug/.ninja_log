@@ -1,5 +1,0 @@
-# ninja log v5
-0	19	1652206879083271295	build.ninja	2f0dc31ceebd1d01
-1	391	1652205631203215721	CMakeFiles/write_motors.dir/write_motors_from_csv.cpp.o	4961ce19fb62e2d7
-435	482	1652205691459885066	write_motors	9f8f34e46e1b16a5
-0	435	1652205691413218397	CMakeFiles/write_motors.dir/write_motors.cpp.o	5d3879816e050ca8
