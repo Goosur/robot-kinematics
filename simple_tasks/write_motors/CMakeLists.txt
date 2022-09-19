@@ -1,18 +1,16 @@
 cmake_minimum_required(VERSION 3.18)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Set project name
 project(write_motors)
 
 # Add project executable
 add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
-# Link shared libraries
-link_directories(/usr/local/lib)
 
-# Include dynamixel stuff
-include_directories(
-    /usr/local/include/dynamixel_sdk
-    /usr/local/include/DynamixelHelper
-)
+# Link shared libraries and include headers
+# Dynamixel sdk and helper installed here
+link_directories(/usr/local/lib)
+include_directories(/usr/local/include)
 
 # Link libraries to project
 target_link_libraries(${PROJECT_NAME}
