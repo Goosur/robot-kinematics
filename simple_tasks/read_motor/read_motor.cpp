@@ -1,24 +1,27 @@
+#include <dynamixel_helper.h>
 #include <iostream>
 
-#include "dynamixel_sdk.h"
-#include "dynamixel_helper.h"
-
 int main() {
+  // Initialize dyanmixel helper on USB0 port
+  const char port[] = "/dev/ttyUSB0";
+  DynamixelHelper dh(port);
 
-    const char port[] = "/dev/ttyUSB0";
-    DynamixelHelper dynamixelHelper(port);
+  // We will be moving motor 4 which is the elbow of the widowx200
+  uint8_t motor_id = 4;
+  double motor_position;
 
-    uint8_t motor_id = 4;
-    double motor_position;
+  // Configure open and configure serial communication
+  dh.openPort();
+  dh.setBaudrate(1000000);
 
-    dynamixelHelper.openPort();
-    dynamixelHelper.setBaudrate(1000000);
+  // Get 1000 data points from the motor
+  int count = 0;
+  while (count < 1000) {
+    // Request current position of motor and output to console
+    motor_position = dh.getAngle(motor_id);
+    std::cout << motor_position << std::endl;
+    count++;
+  }
 
-    while(true)
-    {
-        motor_position = dynamixelHelper.getAngle(motor_id);
-        std::cout << motor_position << std::endl;
-    }
-
-    return 0;
+  return 0;
 }
