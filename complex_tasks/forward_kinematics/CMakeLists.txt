@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Set project name
 project(record_hand_coordinates)
@@ -7,20 +8,14 @@ project(record_hand_coordinates)
 add_executable(${PROJECT_NAME}
     ${PROJECT_NAME}.cpp
     fk.cpp
-)
+    fk.h)
 
-# Link shared libraries
+# Link shared libraries and include headers
+# Dynamixel sdk and helper installed here
 link_directories(/usr/local/lib)
-
-# Include dynamixel stuff
-include_directories(
-    /usr/local/include/dynamixel_sdk
-    /usr/local/include/DynamixelHelper
-    /usr/local/include/eigen3/Eigen/
-)
+include_directories(/usr/local/include)
 
 # Link libraries to project
 target_link_libraries(${PROJECT_NAME}
     DynamixelHelper
-    dxl_x64_cpp # DynamixelSDK
-)
+    dxl_x64_cpp) # DynamixelSDK

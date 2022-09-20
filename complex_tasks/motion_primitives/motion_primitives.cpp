@@ -1,9 +1,7 @@
 #include "motion_primitives.h"
-#include <math.h>
 
-double* motion_primitives::home_to_sleep(double phase)
-{
-    double *angles = new double[5];
+vector<double> motion_primitives::home_to_sleep(double phase) {
+    vector<double> angles(5);
 
     angles[0] = 0.029058252382796024 * exp(-pow(phase - 1.0, 2) / (2 * pow(0.04, 2))) +
                 0.007850037898195827 * exp(-pow(phase - 0.9583333333333333, 2) / (2 * pow(0.04, 2))) +
@@ -118,9 +116,8 @@ double* motion_primitives::home_to_sleep(double phase)
     return angles;
 }
 
-double* motion_primitives::sleep_to_home(double phase)
-{
-    double *angles = new double[5];
+vector<double> motion_primitives::sleep_to_home(double phase) {
+    vector<double> angles(5);
 
     angles[0] = -0.014858263401733851 * exp(-pow(phase - 1.0, 2) / (2 * pow(0.04, 2))) +
                 -0.00439753182888486 * exp(-pow(phase - 0.9583333333333333, 2) / (2 * pow(0.04, 2))) +
@@ -235,9 +232,8 @@ double* motion_primitives::sleep_to_home(double phase)
     return angles;
 }
 
-double* motion_primitives::draw_x(double phase)
-{
-    double *angles = new double[5];
+vector<double> motion_primitives::draw_x(double phase) {
+    vector<double> angles(5);
 
     angles[0] = -0.051053228663951 * exp(-pow(phase - 1.0, 2) / (2 * pow(0.04, 2))) +
                 0.0008543981376347839 * exp(-pow(phase - 0.9583333333333333, 2) / (2 * pow(0.04, 2))) +
@@ -349,15 +345,15 @@ double* motion_primitives::draw_x(double phase)
 
     angles[4] = 0.0;
 
-    for (int i = 0; i < 5; i++)
-        angles[i] += M_PI;
+    // Don't remember why I did this
+    // for (int i = 0; i < 5; i++)
+    //     angles[i] += Mj_PI;
 
     return angles;
 }
 
-double* motion_primitives::draw_line(double phase)
-{
-    double *angles = new double[5];
+vector<double> motion_primitives::draw_line(double phase) {
+    vector<double> angles(5);
 
     angles[0] = -0.05816484448830472 * exp(-pow(phase - 1.0, 2) / (2 * pow(0.04, 2))) +
                 0.020167281880833166 * exp(-pow(phase - 0.9583333333333333, 2) / (2 * pow(0.04, 2))) +

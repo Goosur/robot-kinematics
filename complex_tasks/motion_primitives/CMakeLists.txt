@@ -1,22 +1,20 @@
+# Set project name
 cmake_minimum_required(VERSION 3.18)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Set project name
 project(playback_motion_primitives)
 
-# Add project executable and extra sources
+# Add project executable
 add_executable(${PROJECT_NAME}
     ${PROJECT_NAME}.cpp
     motion_primitives.cpp
-)
+    motion_primitives.h)
 
-# Link shared libraries
+# Link shared libraries and include headers
+# Dynamixel sdk and helper installed here
 link_directories(/usr/local/lib)
-
-# Include dynamixel stuff
-include_directories(
-    /usr/local/include/dynamixel_sdk
-    /usr/local/include/DynamixelHelper
-)
+include_directories(/usr/local/include)
 
 # Link libraries to project
 target_link_libraries(${PROJECT_NAME}
