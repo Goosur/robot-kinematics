@@ -4,9 +4,9 @@
  * @brief Motion Primitive class
  * @version 0.1
  * @date 2022-04-04
- * 
+ *
  * @copyright Copyright (c) 2022
- * 
+ *
  */
 #ifndef MP_H
 #define MP_H
@@ -17,14 +17,14 @@
 
 using std::vector;
 
-class MP
-{
+class MP {
 public:
-	explicit MP(vector<BasisFunction*> funcs);
-	vector<double> at(double phase);
-	vector<BasisFunction*> getFuncs();
+  explicit MP(vector<BasisFunction *> funcs);
+  vector<double> at(double phase);
+  vector<BasisFunction *> getFuncs();
+
 private:
-	vector<BasisFunction*> funcs;
+  vector<BasisFunction *> funcs;
 };
 
 #endif
