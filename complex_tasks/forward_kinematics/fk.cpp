@@ -1,6 +1,5 @@
 #include "fk.h"
 #include <cmath>
-#include <eigen3/Eigen/Eigen>
 #include <iostream>
 
 ///

@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-int main(int argc, char **argv) {
+/* int main(int argc, char **argv) {
   // File to store angles
   std::ofstream f;
   f.open(argv[1]);
@@ -47,5 +47,13 @@ int main(int argc, char **argv) {
 
   f.close();
 
+  return 0;
+} */
+
+int main() {
+  vector<double> alpha{1.1, 1.2, 1.3, 1.4};
+  vector<double> a{2.1, 2.2, 2.3, 2.4};
+  vector<double> d{3.1, 3.2, 3.3, 3.4};
+  FK fk(alpha, a, d);
   return 0;
 }
