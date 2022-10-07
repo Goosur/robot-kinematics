@@ -1,29 +1,30 @@
 #ifndef FK_H
 #define FK_H
 
+#include <array>
 #include <eigen3/Eigen/Eigen>
+#include <cmath>
 #include <vector>
 
-using std::vector;
+using namespace std;
 
 class FK {
 public:
-  FK(vector<double> &alpha, vector<double> &a, vector<double> &d)
+  FK(const vector<double> &alpha, const vector<double> &a,
+     const vector<double> &d)
       : alpha(alpha), a(a), d(d) {}
 
-  vector<double> get_();
+  array<double, 3>
+  get_end_effector_coordinates(const vector<double> &joint_angles);
 
 private:
   vector<double> alpha;
   vector<double> a;
   vector<double> d;
-  // Maybe need vector<double> thetas;
-};
 
-namespace forward_kinematics {
-vector<vector<double>> wx200_parameters(vector<double> thetas);
-Eigen::Matrix4d dh_transform(vector<double> parameters);
-vector<double> get_hand_coordinates(vector<double> angles);
-} // namespace forward_kinematics
+  vector<array<double, 4>> generate_parameters(const vector<double> &thetas);
+  Eigen::Matrix4d
+  generate_dh_transform(const array<double, 4> &joint_parameters);
+};
 
 #endif
