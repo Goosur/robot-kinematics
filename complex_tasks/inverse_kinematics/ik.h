@@ -1,5 +1,8 @@
-#include <eigen3/Eigen/Eigen>
+#ifndef IK_H
+#define IK_H
 
-int main() {
-  return 0;
-}
+class IK {
+
+};
+
+#endif

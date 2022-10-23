@@ -2,13 +2,15 @@ cmake_minimum_required(VERSION 3.18)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Set project name
-project(record_hand_coordinates)
+project(inverse_kinematics)
 
 # Add project executable
 add_executable(${PROJECT_NAME}
-    ${PROJECT_NAME}.cpp
+    main.cpp
     ik.cpp
-    ik.h)
+    ik.h
+    fk.cpp
+    fk.h)
 
 # Link shared libraries and include headers
 # Dynamixel sdk and helper installed here
