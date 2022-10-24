@@ -1,3 +1,7 @@
 build/
 .cache/
 compile_commands.json
+
+complex_tasks/inverse_kinematics/__pycache__
+complex_tasks/inverse_kinematics/ik_env
+complex_tasks/inverse_kinematics/__pycache__
