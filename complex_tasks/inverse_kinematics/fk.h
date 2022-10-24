@@ -3,8 +3,6 @@
 
 #include <array>
 #include <eigen3/Eigen/Eigen>
-#include <cmath>
-#include <vector>
 
 using namespace std;
 
@@ -13,7 +11,6 @@ public:
   FK(const vector<double> &alpha, const vector<double> &a,
      const vector<double> &d)
       : alpha(alpha), a(a), d(d) {}
-
   array<double, 3>
   get_end_effector_coordinates(const vector<double> &joint_angles);
 
