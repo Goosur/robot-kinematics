@@ -42,7 +42,8 @@ Matrix5d IK::generate_jacobian(const vector<double> &thetas) {
 
 vector<double> IK::get_next_thetas(const vector<double> &current_thetas,
                                    const Vector5d &goal_pose, FK &fk) {
-  vector<double> new_thetas(current_thetas.size());
+  Vector5d new_thetas =
+      Vector5d::Map(&current_thetas[0], current_thetas.size());
 
   // Max change we should see in pose.
   Vector5d x_max{0.01, 0.01, 0.01, 0.01, 0.01};
@@ -62,7 +63,7 @@ vector<double> IK::get_next_thetas(const vector<double> &current_thetas,
 
   // # STEP 2 - Determine a reasonable small amount to move.
   Vector5d current_linear_change =
-      x_max * (total_linear_change / total_linear_change.norm());
+      (total_linear_change / total_linear_change.norm()).cwiseProduct(x_max);
 
   // # STEP 3 - Generate the jacobian for this time step and see if the
   // determinant is reasonable (if it is too small it will eventually reach a
@@ -71,12 +72,12 @@ vector<double> IK::get_next_thetas(const vector<double> &current_thetas,
   double J_det = J.determinant();
 
   // # CHANGED THIS TO 15000 BECAUSE DETERMINANT IS BIG WHEN IT SPAZZES
+  // If a singularity isn't encountered update the 2
   if (abs(J_det) > 1) {
-    //rotational_change = J.inverse().dot(current_linear_change);
+    Vector5d rotational_change = J.inverse() * current_linear_change;
+    new_thetas += rotational_change;
   }
-  // if abs(jdet) > 1:
-  //     rotational_change = (np.linalg.inv(j) @ current_linear_change)
-  //     # Update thetas to new position
-  //     new_thetas = current_thetas + rotational_change
-  return {};
+
+  return vector<double>(new_thetas.data(),
+                        new_thetas.data() + new_thetas.size());
 }
