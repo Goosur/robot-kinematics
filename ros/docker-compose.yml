@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  robot-arm:
+    image: ros-humble-custom:latest
+    build: .
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - $PWD/ros2_ws:/root/ros2_ws
+    network_mode: host
+    stdin_open: true
+    tty: true
