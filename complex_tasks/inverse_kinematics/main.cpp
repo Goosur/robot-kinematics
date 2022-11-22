@@ -11,9 +11,14 @@ int main(int argc, char **argv) {
   FK wx200(alpha, a, d);
 
   // Thetas
+  // TODO: ACCOUNT FOR FIXED ELBOW JOINT ANGLE (M_PI / 2) AND END EFFECTOR ANGLE??
   vector<double> initial_thetas{M_PI, M_PI, M_PI, M_PI, M_PI};
   vector<double> current_thetas = initial_thetas;
   // End effector location
+  // Adjust joint angles to make them work with DH
+  current_thetas[1] -= M_PI / 2;
+  current_thetas[3] -= M_PI;
+  current_thetas[4] -= M_PI / 2;
   array<double, 3> current_xyz =
       wx200.get_end_effector_coordinates(current_thetas);
   // End effector poses
@@ -29,11 +34,30 @@ int main(int argc, char **argv) {
   bool still_moving;
   do {
     still_moving = false;
+    // Go through current x, y, z, roll, pitch and compare to goal to see if we
+    // are close yet.
     for (int i = 0; i < goal_pose.size(); i++)
       still_moving |=
-          abs(goal_pose[i] - current_pose[i]) >
-          moving_status_threshold;
-    cout << "Waiting for arm to reach goal..." << endl;
+          abs(goal_pose[i] - current_pose[i]) > moving_status_threshold;
+    cout << current_pose[0] << '\t' << current_pose[1] << '\t'
+         << current_pose[2] << '\t' << current_pose[3] << '\t'
+         << current_pose[4] << '\t' << endl;
+    
+    // Update current thetas
+    current_thetas = IK::get_next_thetas(current_thetas, goal_pose, wx200);
+    // Update current xyz
+    current_xyz = wx200.get_end_effector_coordinates(current_thetas);
+    // Update current pose
+    current_pose = {current_xyz[0], current_xyz[1], current_xyz[2],
+                    current_thetas[4] - M_PI,
+                    current_thetas[1] + current_thetas[3] + current_thetas[4] -
+                        3 * M_PI};
+    
+    // Adjust joint angles to make them work with DH
+    current_thetas[1] -= M_PI / 2;
+    current_thetas[3] -= M_PI;
+    current_thetas[4] -= M_PI / 2;
+
   } while (still_moving);
   cout << "Finished moving" << endl;
 
