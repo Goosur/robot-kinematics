@@ -16,9 +16,9 @@ namespace IK {
  * @param thetas [theta1, theta2, theta4, theta5, theta6]
  * @return Resulting jacobian matrix.
  */
-Matrix5d generate_jacobian(const vector<double> &thetas);
-vector<double> get_next_thetas(const vector<double> &current_thetas,
-                               const Vector5d &goal_thetas, FK &fk);
+Matrix5d generate_jacobian(vector<double> thetas);
+vector<double> get_next_thetas(vector<double> current_thetas,
+                               vector<double> goal_thetas, FK fk);
 }; // namespace IK
 
 #endif
