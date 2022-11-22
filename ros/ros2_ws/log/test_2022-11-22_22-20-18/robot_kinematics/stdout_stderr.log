@@ -1,0 +1,49 @@
+UpdateCTestConfiguration  from :/root/ros2_ws/build/robot_kinematics/CTestConfiguration.ini
+Parse Config file:/root/ros2_ws/build/robot_kinematics/CTestConfiguration.ini
+   Site: goosarch
+   Build name: (empty)
+ Add coverage exclude regular expressions.
+Create new tag: 20221122-2220 - Experimental
+UpdateCTestConfiguration  from :/root/ros2_ws/build/robot_kinematics/CTestConfiguration.ini
+Parse Config file:/root/ros2_ws/build/robot_kinematics/CTestConfiguration.ini
+Test project /root/ros2_ws/build/robot_kinematics
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: lint_cmake
+
+1: Test command: /usr/bin/python3.10 "-u" "/opt/ros/humble/share/ament_cmake_test/cmake/run_test.py" "/root/ros2_ws/build/robot_kinematics/test_results/robot_kinematics/lint_cmake.xunit.xml" "--package-name" "robot_kinematics" "--output-file" "/root/ros2_ws/build/robot_kinematics/ament_lint_cmake/lint_cmake.txt" "--command" "/opt/ros/humble/bin/ament_lint_cmake" "--xunit-file" "/root/ros2_ws/build/robot_kinematics/test_results/robot_kinematics/lint_cmake.xunit.xml"
+1: Test timeout computed to be: 60
+1: -- run_test.py: invoking following command in '/root/ros2_ws/src/robot_kinematics':
+1:  - /opt/ros/humble/bin/ament_lint_cmake --xunit-file /root/ros2_ws/build/robot_kinematics/test_results/robot_kinematics/lint_cmake.xunit.xml
+1: 
+1: No problems found
+1: -- run_test.py: return code 0
+1: -- run_test.py: verify result file '/root/ros2_ws/build/robot_kinematics/test_results/robot_kinematics/lint_cmake.xunit.xml'
+1/2 Test #1: lint_cmake .......................   Passed    0.08 sec
+test 2
+    Start 2: xmllint
+
+2: Test command: /usr/bin/python3.10 "-u" "/opt/ros/humble/share/ament_cmake_test/cmake/run_test.py" "/root/ros2_ws/build/robot_kinematics/test_results/robot_kinematics/xmllint.xunit.xml" "--package-name" "robot_kinematics" "--output-file" "/root/ros2_ws/build/robot_kinematics/ament_xmllint/xmllint.txt" "--command" "/opt/ros/humble/bin/ament_xmllint" "--xunit-file" "/root/ros2_ws/build/robot_kinematics/test_results/robot_kinematics/xmllint.xunit.xml"
+2: Test timeout computed to be: 60
+2: -- run_test.py: invoking following command in '/root/ros2_ws/src/robot_kinematics':
+2:  - /opt/ros/humble/bin/ament_xmllint --xunit-file /root/ros2_ws/build/robot_kinematics/test_results/robot_kinematics/xmllint.xunit.xml
+2: File 'package.xml' is valid
+2: 
+2: No problems found
+2: -- run_test.py: return code 0
+2: -- run_test.py: verify result file '/root/ros2_ws/build/robot_kinematics/test_results/robot_kinematics/xmllint.xunit.xml'
+2/2 Test #2: xmllint ..........................   Passed    0.37 sec
+
+[0;32m100% tests passed[0;0m, 0 tests failed[0;0m out of 2
+
+Label Time Summary:
+lint_cmake    =   0.08 sec*proc (1 test)
+linter        =   0.45 sec*proc (2 tests)
+xmllint       =   0.37 sec*proc (1 test)
+
+Total Test time (real) =   0.45 sec

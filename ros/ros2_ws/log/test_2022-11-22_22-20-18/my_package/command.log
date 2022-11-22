@@ -1,0 +1,2 @@
+Invoking command in '/root/ros2_ws/build/my_package': AMENT_PREFIX_PATH=/root/ros2_ws/install/my_package:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/root/ros2_ws/install/my_package /usr/bin/ctest -C Release -D ExperimentalTest --no-compress-output -V --force-new-ctest-process
+Invoked command in '/root/ros2_ws/build/my_package' returned '0': AMENT_PREFIX_PATH=/root/ros2_ws/install/my_package:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/root/ros2_ws/install/my_package /usr/bin/ctest -C Release -D ExperimentalTest --no-compress-output -V --force-new-ctest-process
