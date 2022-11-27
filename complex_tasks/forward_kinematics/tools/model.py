@@ -16,15 +16,14 @@ def wx200_parameters(motor_1_angle, motor_2_angle, motor_4_angle, motor_5_angle,
     :rtype: numpy.ndarray
     """
 
-    # Devon's parameters
     parameters = np.array([
         # alpha i - 1, a i - 1, d i, theta i
-        [0.0, 0.0, 113.25, motor_1_angle],
-        [np.pi / 2, 0.0, 0.0, motor_2_angle - np.pi / 2],
-        [0.0, 200.0, 0.0, np.pi / 2],
+        [0.0, 0.0, 113.25, motor_1_angle - np.pi],
+        [-np.pi / 2, 0.0, 0.0, motor_2_angle - 3 * np.pi / 2],
+        [np.pi, 200.0, 0.0, -np.pi / 2],
         [0.0, 50.0, 0.0, motor_4_angle - np.pi],
         [0.0, 200.0, 0.0, motor_5_angle - np.pi / 2],
-        [np.pi / 2, 0.0, 0.0, motor_6_angle],
+        [np.pi / 2, 0.0, 0.0, motor_6_angle - np.pi / 2],
         [0.0, 0.0, 174.15, 0.0]
     ])
 
@@ -79,8 +78,8 @@ def plot_model(frames):
         y.append(frame[1][3])
         z.append(frame[2][3])
 
-    for i in range(len(x)):
-        print(x[i], y[i], z[i])
+    # for i in range(len(x)):
+    #     print(x[i], y[i], z[i])
 
     # Create new figure and include a 3d plot
     fig = plt.figure()

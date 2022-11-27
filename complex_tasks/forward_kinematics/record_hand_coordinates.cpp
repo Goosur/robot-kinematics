@@ -3,12 +3,12 @@
 #include <fstream>
 #include <iostream>
 
-/* wx200 parameters
- * alpha: [0.0, M_PI / 2, 0.0, 0.0, 0.0, M_PI / 2, 0.0]
+/* wx200 parameters adjusted for dynamixel motors (added PI to all variable thetas)
+ * alpha: [0.0, -M_PI / 2, M_PI, 0.0, 0.0, M_PI / 2, 0.0]
  *     a: [0.0, 0.0, 200.0, 50.0, 200.0, 0.0, 0.0]
  *     d: [113.25, 0.0, 0.0, 0.0, 0.0, 0.0, 174.15]
- * theta: [thetas[0], thetas[1] - M_PI / 2, M_PI / 2, thetas[2] - M_PI,
- *                    thetas[3] - M_PI / 2, thetas[4], 0.0] */
+ * theta: [thetas[0] - M_PI, thetas[1] - 3 * M_PI / 2, -M_PI / 2, thetas[2] - M_PI,
+ *         thetas[3] - M_PI / 2, thetas[4] - M_PI / 2, 0.0] */
 int main(int argc, char **argv) {
   // File to store angles
   ofstream f;
@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
   array<double, 3> hand_coordinates;
 
   // Prime forward kinematics specifically for wx200 arm
-  vector<double> alpha{0.0, M_PI / 2, 0.0, 0.0, 0.0, M_PI / 2, 0.0};
+  vector<double> alpha{0.0, -M_PI / 2, M_PI, 0.0, 0.0, M_PI / 2, 0.0};
   vector<double> a{0.0, 0.0, 200.0, 50.0, 200.0, 0.0, 0.0};
   vector<double> d{113.25, 0.0, 0.0, 0.0, 0.0, 0.0, 174.15};
   FK wx200(alpha, a, d);
@@ -37,18 +37,9 @@ int main(int argc, char **argv) {
 
   // Record 1000 end effector positions
   for (int i = 0; i < 1000; i++) {
-    
+
     // Get current motor angles
     motor_angles = dh.groupGetAngle(motor_ids);
-
-    // Insert fake joint angle for DH fake "elbow" joint and end effector angle
-    motor_angles.insert(motor_angles.begin() + 2, M_PI / 2);
-    motor_angles.push_back(0);
-
-    // Adjust joint angles to make them work with DH
-    motor_angles[1] -= M_PI / 2;
-    motor_angles[3] -= M_PI;
-    motor_angles[4] -= M_PI / 2;
 
     // Convert current motor angles to end effector coordinates
     hand_coordinates = wx200.get_end_effector_coordinates(motor_angles);
