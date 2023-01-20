@@ -1,1 +1,0 @@
-/home/devon/thesis_ros_ws/devel/.private/tutorial/share/common-lisp/ros/tutorial/msg/tutorial-msg.asd

@@ -1,1 +1,0 @@
-/home/devon/thesis_ros_ws/devel/.private/tutorial/share/roseus/ros/tutorial/srv/AddTwoInts.l
