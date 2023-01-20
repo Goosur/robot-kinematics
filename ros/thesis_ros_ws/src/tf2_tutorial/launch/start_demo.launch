@@ -13,6 +13,7 @@
     name="turtle2_tf2_broadcaster"/>
 
   <node pkg="tf2_tutorial" type="turtle_tf2_listener" name="listener"/>
+  <node pkg="tf2_tutorial" type="frame_tf2_broadcaster" name="broadcaster_frame"/>
 </launch>
 
 <!-- vim:ft=xml
