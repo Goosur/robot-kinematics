@@ -9,4 +9,4 @@ ik_env/
 # Ros things
 build/
 devel/
-log/
+logs/
