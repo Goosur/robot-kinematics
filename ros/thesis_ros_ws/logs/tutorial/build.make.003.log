@@ -1,0 +1,30 @@
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target _tutorial_generate_messages_check_deps_Num
+[  0%] Built target _tutorial_generate_messages_check_deps_AddTwoInts
+[ 47%] Built target tutorial_generate_messages_lisp
+[ 47%] Built target tutorial_generate_messages_cpp
+[ 47%] Built target tutorial_generate_messages_eus
+[ 47%] Built target tutorial_generate_messages_nodejs
+[ 61%] Built target tutorial_generate_messages_py
+[35m[1mScanning dependencies of target talker[0m
+[35m[1mScanning dependencies of target listener[0m
+[ 61%] Built target tutorial_generate_messages
+[ 61%] Built target tutorial_gencpp
+[ 66%] [32mBuilding CXX object CMakeFiles/listener.dir/src/listener.cpp.o[0m
+[ 71%] [32mBuilding CXX object CMakeFiles/talker.dir/src/talker.cpp.o[0m
+[35m[1mScanning dependencies of target add_two_ints_client[0m
+[35m[1mScanning dependencies of target add_two_ints_server[0m
+[ 80%] [32mBuilding CXX object CMakeFiles/add_two_ints_server.dir/src/add_two_ints_server.cpp.o[0m
+[ 80%] [32mBuilding CXX object CMakeFiles/add_two_ints_client.dir/src/add_two_ints_client.cpp.o[0m
+[ 85%] [32m[1mLinking CXX executable /home/devon/thesis_ros_ws/devel/.private/tutorial/lib/tutorial/add_two_ints_client[0m
+[ 90%] [32m[1mLinking CXX executable /home/devon/thesis_ros_ws/devel/.private/tutorial/lib/tutorial/talker[0m
+[ 90%] Built target add_two_ints_client
+[ 95%] [32m[1mLinking CXX executable /home/devon/thesis_ros_ws/devel/.private/tutorial/lib/tutorial/add_two_ints_server[0m
+[ 95%] Built target talker
+[100%] [32m[1mLinking CXX executable /home/devon/thesis_ros_ws/devel/.private/tutorial/lib/tutorial/listener[0m
+[100%] Built target add_two_ints_server
+[100%] Built target listener

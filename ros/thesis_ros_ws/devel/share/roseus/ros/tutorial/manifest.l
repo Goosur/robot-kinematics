@@ -1,0 +1,1 @@
+/home/devon/thesis_ros_ws/devel/.private/tutorial/share/roseus/ros/tutorial/manifest.l

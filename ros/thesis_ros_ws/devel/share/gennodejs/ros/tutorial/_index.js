@@ -1,0 +1,1 @@
+/home/devon/thesis_ros_ws/devel/.private/tutorial/share/gennodejs/ros/tutorial/_index.js
