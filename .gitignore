@@ -1,12 +1,12 @@
-build/
+# C++ things
 .cache/
 compile_commands.json
 
-complex_tasks/inverse_kinematics/__pycache__
-complex_tasks/inverse_kinematics/ik_env
-complex_tasks/inverse_kinematics/__pycache__
+# Python things
+__pycache__/
+ik_env/
 
 # Ros things
-./ros/thesis_ros_ws/build/
-./ros/thesis_ros_ws/devel/
-./ros/thesis_ros_ws/log/
+build/
+devel/
+log/
