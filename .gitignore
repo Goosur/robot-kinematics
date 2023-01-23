@@ -8,6 +8,8 @@ ik_env/
 
 # Ros things
 build/
+install/
 devel/
+log/
 logs/
 .catkin_tools/
