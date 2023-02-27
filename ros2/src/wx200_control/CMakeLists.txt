@@ -12,12 +12,18 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(dynamixel_sdk REQUIRED)
+find_package(wx200_control_interfaces REQUIRED)
 
-add_executable(publisher src/motor_pub.cpp)
-ament_target_dependencies(publisher rclcpp std_msgs dynamixel_sdk)
+add_executable(multi_motor_writer src/motor_pub.cpp)
+ament_target_dependencies(multi_motor_writer
+  rclcpp
+  std_msgs
+  dynamixel_sdk
+  wx200_control_interfaces
+  )
 
 install(TARGETS
-  publisher
+  multi_motor_writer
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
