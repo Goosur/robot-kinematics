@@ -1,10 +1,7 @@
 <?xml version="1.0"?>
 
 <robot name="wx200">
-  <material name="black">
-    <color rgba="0 0 0 1"/>
-  </material>
-
+  
   <link name="base_link"/>
 
 
@@ -16,7 +13,18 @@
     <child link="waist"/>
   </joint>
   
-  <link name="waist"/>
+  <link name="waist">
+    <!-- Main cylinder -->
+    <visual>
+      <origin xyz="0 0 -0.056625"/>
+      <geometry>
+	<cylinder radius="0.05" length="0.06325"/>
+      </geometry>
+      <material name="black">
+	<color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+  </link>
 
   
   <joint name="shoulder_joint" type="revolute">
@@ -27,7 +35,31 @@
     <child link="shoulder"/>
   </joint>
   
-  <link name="shoulder"/>
+  <link name="shoulder">
+    <!-- Joint -->
+    <visual>
+      <geometry>
+	<cylinder radius="0.025" length="0.1"/>
+      </geometry>
+      <material name="grey">
+	<color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <!-- Vertical link -->
+    <visual>
+      <origin xyz="0.100 0.025 0" rpy="0 0 0.24500"/>
+      <geometry>
+	<box size="0.200 0.025 0.025"/>
+      </geometry>
+    </visual>
+    <!-- Horizontal link -->
+    <visual>
+      <origin xyz="0.200 0.025 0" rpy="0 0 -1.32582"/>
+      <geometry>
+	<box size="0.050 0.025 0.025"/>
+      </geometry>
+    </visual>
+  </link>
 
   
   <joint name="elbow_joint" type="revolute">
@@ -38,7 +70,24 @@
     <child link="elbow"/>
   </joint>
      
-  <link name="elbow"/>
+  <link name="elbow">
+    <!-- Joint -->
+    <visual>
+      <geometry>
+	<cylinder radius="0.025" length="0.1"/>
+      </geometry>
+      <material name="blue">
+	<color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <!-- Link -->
+    <visual>
+      <origin xyz="0.100 0 0"/>
+      <geometry>
+	<box size="0.200 0.025 0.025"/>
+      </geometry>
+    </visual>
+  </link>
 
   
   <joint name="wrist_angle_joint" type="revolute">
@@ -49,7 +98,17 @@
     <child link="wrist_angle"/>
   </joint>
 
-  <link name="wrist_angle"/>
+  <link name="wrist_angle">
+    <!-- Joint -->
+    <visual>
+      <geometry>
+	<cylinder radius="0.025" length="0.1"/>
+      </geometry>
+      <material name="red">
+	<color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+  </link>
 
   
   <joint name="wrist_roll_joint" type="revolute">
@@ -60,7 +119,25 @@
     <child link="wrist_roll"/>
   </joint>
 
-  <link name="wrist_roll"/>
+  <link name="wrist_roll">
+    <!-- Joint -->
+    <visual>
+      <origin xyz="0 0 0.025"/>
+      <geometry>
+	<cylinder radius="0.025" length="0.065"/>
+      </geometry>
+      <material name="green">
+	<color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <!-- Link -->
+    <visual>
+      <origin xyz="0 0 0.09"/>
+      <geometry>
+	<box size="0.025 0.025 0.06605"/>
+      </geometry>
+    </visual>
+  </link>
 
   
   <!-- TODO: Figure out how to model the gripper dynamically -->
