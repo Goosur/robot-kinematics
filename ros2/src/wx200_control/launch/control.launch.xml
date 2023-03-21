@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="wx200_control" exec="multi_motor_writer" name="wx200_controller"/>
+  <node pkg="rviz2" exec="rviz2" name="rviz2"/>
+</launch>

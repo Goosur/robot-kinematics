@@ -26,4 +26,7 @@ install(TARGETS
   multi_motor_writer
   DESTINATION lib/${PROJECT_NAME})
 
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME})
+
 ament_package()
