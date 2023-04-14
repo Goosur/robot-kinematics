@@ -44,7 +44,7 @@ void groupWriteMotor(uint8_t *ids, size_t ids_size, uint16_t *data,
   dynamixel::GroupSyncWrite groupSyncWrite(portHandler, packetHandler, address,
                                            byte_size);
 
-  uint8_t *param_data = new uint8_t[byte_size];
+  auto *param_data = new uint8_t[byte_size];
   for (int i = 0; i < (int)ids_size; i++) {
     // Convert data to raw data for transfer
     for (int j = 0; j < byte_size; j++) {
