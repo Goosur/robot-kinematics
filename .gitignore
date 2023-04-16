@@ -1,6 +1,5 @@
 # C++ things
 .cache/
-compile_commands.json
 
 # Python things
 __pycache__/
@@ -9,7 +8,4 @@ ik_env/
 # Ros things
 build/
 install/
-devel/
 log/
-logs/
-.catkin_tools/
