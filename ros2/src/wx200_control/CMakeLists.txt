@@ -14,6 +14,9 @@ find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(dynamixel_sdk REQUIRED)
+find_package(robot_state_publisher REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
 find_package(wx200_control_interfaces REQUIRED)
 
 add_executable(multi_motor_writer src/motor_pub.cpp)
@@ -29,6 +32,7 @@ ament_target_dependencies(state_publisher
         sensor_msgs
         geometry_msgs
         dynamixel_sdk
+        robot_state_publisher
         wx200_control_interfaces)
 
 install(TARGETS

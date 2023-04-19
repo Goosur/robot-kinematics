@@ -1,151 +1,149 @@
 <?xml version="1.0"?>
 
 <robot name="wx200">
-  
-  <link name="base_link"/>
+
+    <link name="base_link"/>
+
+    <joint name="waist_joint" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-3.14159" upper="3.14159" effort="4.1" velocity="4.81711"/>
+        <parent link="base_link"/>
+        <child link="waist"/>
+    </joint>
+
+    <link name="waist">
+        <!-- Main cylinder -->
+        <visual>
+            <origin xyz="0 0 -0.056625"/>
+            <geometry>
+                <cylinder radius="0.05" length="0.06325"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+    </link>
 
 
-  <joint name="waist_joint" type="revolute">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <axis xyz="0 0 1"/>
-    <limit lower="-3.14159" upper="3.14159" effort="4.1" velocity="4.81711"/>
-    <parent link="base_link"/>
-    <child link="waist"/>
-  </joint>
-  
-  <link name="waist">
-    <!-- Main cylinder -->
-    <visual>
-      <origin xyz="0 0 -0.056625"/>
-      <geometry>
-	<cylinder radius="0.05" length="0.06325"/>
-      </geometry>
-      <material name="black">
-	<color rgba="0 0 0 1"/>
-      </material>
-    </visual>
-  </link>
+    <joint name="shoulder_joint" type="revolute">
+        <origin xyz="0 0 0" rpy="1.57080 -1.32582 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.88495" upper="1.97222" effort="4.1" velocity="4.81711"/>
+        <parent link="waist"/>
+        <child link="shoulder"/>
+    </joint>
 
-  
-  <joint name="shoulder_joint" type="revolute">
-    <origin xyz="0 0 0" rpy="1.57080 -1.32582 0"/>
-    <axis xyz="0 0 1"/>
-    <limit lower="-1.88495" upper="1.97222" effort="4.1" velocity="4.81711"/>
-    <parent link="waist"/>
-    <child link="shoulder"/>
-  </joint>
-  
-  <link name="shoulder">
-    <!-- Joint -->
-    <visual>
-      <geometry>
-	<cylinder radius="0.025" length="0.1"/>
-      </geometry>
-      <material name="grey">
-	<color rgba="0.8 0.8 0.8 1"/>
-      </material>
-    </visual>
-    <!-- Vertical link -->
-    <visual>
-      <origin xyz="0.100 0.025 0" rpy="0 0 0.24500"/>
-      <geometry>
-	<box size="0.200 0.025 0.025"/>
-      </geometry>
-    </visual>
-    <!-- Horizontal link -->
-    <visual>
-      <origin xyz="0.200 0.025 0" rpy="0 0 -1.32582"/>
-      <geometry>
-	<box size="0.050 0.025 0.025"/>
-      </geometry>
-    </visual>
-  </link>
+    <link name="shoulder">
+        <!-- Joint -->
+        <visual>
+            <geometry>
+                <cylinder radius="0.025" length="0.1"/>
+            </geometry>
+            <material name="grey">
+                <color rgba="0.8 0.8 0.8 1"/>
+            </material>
+        </visual>
+        <!-- Vertical link -->
+        <visual>
+            <origin xyz="0.100 0.025 0" rpy="0 0 0.24500"/>
+            <geometry>
+                <box size="0.200 0.025 0.025"/>
+            </geometry>
+        </visual>
+        <!-- Horizontal link -->
+        <visual>
+            <origin xyz="0.200 0.025 0" rpy="0 0 -1.32582"/>
+            <geometry>
+                <box size="0.050 0.025 0.025"/>
+            </geometry>
+        </visual>
+    </link>
 
-  
-  <joint name="elbow_joint" type="revolute">
-    <origin xyz="0.20616 0 0" rpy="0 0 -1.32582"/>
-    <axis xyz="0 0 1"/>
-    <limit lower="-1.62315" upper="1.88495" effort="4.1" velocity="4.81711"/>
-    <parent link="shoulder"/>
-    <child link="elbow"/>
-  </joint>
-     
-  <link name="elbow">
-    <!-- Joint -->
-    <visual>
-      <geometry>
-	<cylinder radius="0.025" length="0.1"/>
-      </geometry>
-      <material name="blue">
-	<color rgba="0 0 1 1"/>
-      </material>
-    </visual>
-    <!-- Link -->
-    <visual>
-      <origin xyz="0.100 0 0"/>
-      <geometry>
-	<box size="0.200 0.025 0.025"/>
-      </geometry>
-    </visual>
-  </link>
 
-  
-  <joint name="wrist_angle_joint" type="revolute">
-    <origin xyz="0.20000 0 0" rpy="0 0 1.57080"/>
-    <axis xyz="0 0 1"/>
-    <limit lower="-1.74533" upper="2.14675" effort="1.4" velocity="5.96903"/>
-    <parent link="elbow"/>
-    <child link="wrist_angle"/>
-  </joint>
+    <joint name="elbow_joint" type="revolute">
+        <origin xyz="0.20616 0 0" rpy="0 0 -1.32582"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.62315" upper="1.88495" effort="4.1" velocity="4.81711"/>
+        <parent link="shoulder"/>
+        <child link="elbow"/>
+    </joint>
 
-  <link name="wrist_angle">
-    <!-- Joint -->
-    <visual>
-      <geometry>
-	<cylinder radius="0.025" length="0.1"/>
-      </geometry>
-      <material name="red">
-	<color rgba="1 0 0 1"/>
-      </material>
-    </visual>
-  </link>
+    <link name="elbow">
+        <!-- Joint -->
+        <visual>
+            <geometry>
+                <cylinder radius="0.025" length="0.1"/>
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1"/>
+            </material>
+        </visual>
+        <!-- Link -->
+        <visual>
+            <origin xyz="0.100 0 0"/>
+            <geometry>
+                <box size="0.200 0.025 0.025"/>
+            </geometry>
+        </visual>
+    </link>
 
-  
-  <joint name="wrist_roll_joint" type="revolute">
-    <origin xyz="0 0 0" rpy="1.57080 0 0"/>
-    <axis xyz="0 0 1"/>
-    <limit lower="-3.14159" upper="3.14159" effort="1.4" velocity="5.96903"/>
-    <parent link="wrist_angle"/>
-    <child link="wrist_roll"/>
-  </joint>
 
-  <link name="wrist_roll">
-    <!-- Joint -->
-    <visual>
-      <origin xyz="0 0 0.025"/>
-      <geometry>
-	<cylinder radius="0.025" length="0.065"/>
-      </geometry>
-      <material name="green">
-	<color rgba="0 1 0 1"/>
-      </material>
-    </visual>
-    <!-- Link -->
-    <visual>
-      <origin xyz="0 0 0.09"/>
-      <geometry>
-	<box size="0.025 0.025 0.06605"/>
-      </geometry>
-    </visual>
-  </link>
+    <joint name="wrist_angle_joint" type="revolute">
+        <origin xyz="0.20000 0 0" rpy="0 0 1.57080"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.74533" upper="2.14675" effort="1.4" velocity="5.96903"/>
+        <parent link="elbow"/>
+        <child link="wrist_angle"/>
+    </joint>
 
-  
-  <!-- TODO: Figure out how to model the gripper dynamically -->
-  <joint name="gripper_joint" type="fixed">
-    <parent link="wrist_roll"/>
-    <child link="gripper"/>
-  </joint>
+    <link name="wrist_angle">
+        <!-- Joint -->
+        <visual>
+            <geometry>
+                <cylinder radius="0.025" length="0.1"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1"/>
+            </material>
+        </visual>
+    </link>
 
-  <link name="gripper"/>
+
+    <joint name="wrist_roll_joint" type="revolute">
+        <origin xyz="0 0 0" rpy="1.57080 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-3.14159" upper="3.14159" effort="1.4" velocity="5.96903"/>
+        <parent link="wrist_angle"/>
+        <child link="wrist_roll"/>
+    </joint>
+
+    <link name="wrist_roll">
+        <!-- Joint -->
+        <visual>
+            <origin xyz="0 0 0.025"/>
+            <geometry>
+                <cylinder radius="0.025" length="0.065"/>
+            </geometry>
+            <material name="green">
+                <color rgba="0 1 0 1"/>
+            </material>
+        </visual>
+        <!-- Link -->
+        <visual>
+            <origin xyz="0 0 0.09"/>
+            <geometry>
+                <box size="0.025 0.025 0.06605"/>
+            </geometry>
+        </visual>
+    </link>
+
+
+    <joint name="gripper_joint" type="fixed">
+        <parent link="wrist_roll"/>
+        <child link="gripper"/>
+    </joint>
+
+    <link name="gripper"/>
 
 </robot>
