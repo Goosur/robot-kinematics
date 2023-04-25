@@ -35,36 +35,16 @@ void DynamixelHelper::ledEnable(uint8_t id) { this->writeMotor(id, 65, 1, 1); }
 
 void DynamixelHelper::ledDisable(uint8_t id) { this->writeMotor(id, 65, 0, 1); }
 
-void DynamixelHelper::groupLedEnable(vector<uint8_t> ids) {
-  // Convert ids vector into basic array for low level dynamixel communication
-  auto *ids_array = new uint8_t[ids.size()];
-  for (int i = 0; i < ids.size(); i++)
-    ids_array[i] = ids[i];
-
-  uint32_t data[ids.size()];
-  for (int i = 0; i < ids.size(); i++)
-    data[i] = 1;
-
-  this->groupWriteMotor(ids_array, ids.size(), data, 65, 1);
-
-  // Clean up
-  delete[] ids_array;
+void DynamixelHelper::groupLedEnable(std::vector<uint8_t> ids) {
+  // Send ones to enable
+  std::vector<uint32_t> data(ids.size(), 1);
+  this->groupWriteMotor(ids, data, 65, 1);
 }
 
-void DynamixelHelper::groupLedDisable(vector<uint8_t> ids) {
-  // Convert ids vector into basic array for low level dynamixel communication
-  auto *ids_array = new uint8_t[ids.size()];
-  for (int i = 0; i < ids.size(); i++)
-    ids_array[i] = ids[i];
-
-  uint32_t data[ids.size()];
-  for (int i = 0; i < ids.size(); i++)
-    data[i] = 0;
-
-  this->groupWriteMotor(ids_array, ids.size(), data, 65, 1);
-
-  // Clean up
-  delete[] ids_array;
+void DynamixelHelper::groupLedDisable(std::vector<uint8_t> ids) {
+  // Send zeroes to disable
+  std::vector<uint32_t> data(ids.size(), 0);
+  this->groupWriteMotor(ids, data, 65, 1);
 }
 
 void DynamixelHelper::torqueEnable(uint8_t id) {
@@ -77,36 +57,14 @@ void DynamixelHelper::torqueDisable(uint8_t id) {
   std::clog << "[ID: " << (int)id << "] Torque Disabled" << std::endl;
 }
 
-void DynamixelHelper::groupTorqueEnable(vector<uint8_t> ids) {
-  // Convert ids vector into basic array for low level dynamixel communication
-  auto *ids_array = new uint8_t[ids.size()];
-  for (int i = 0; i < ids.size(); i++)
-    ids_array[i] = ids[i];
-
-  uint32_t data[ids.size()];
-  for (int i = 0; i < ids.size(); i++)
-    data[i] = 1;
-
-  this->groupWriteMotor(ids_array, ids.size(), data, 64, 1);
-
-  // Clean up
-  delete[] ids_array;
+void DynamixelHelper::groupTorqueEnable(std::vector<uint8_t> ids) {
+  std::vector<uint32_t> data(ids.size(), 1);
+  this->groupWriteMotor(ids, data, 64, 1);
 }
 
-void DynamixelHelper::groupTorqueDisable(vector<uint8_t> ids) {
-  // Convert ids vector into basic array for low level dynamixel communication
-  auto *ids_array = new uint8_t[ids.size()];
-  for (int i = 0; i < ids.size(); i++)
-    ids_array[i] = ids[i];
-
-  uint32_t data[ids.size()];
-  for (int i = 0; i < ids.size(); i++)
-    data[i] = 0;
-
-  this->groupWriteMotor(ids_array, ids.size(), data, 64, 1);
-
-  // Clean up
-  delete[] ids_array;
+void DynamixelHelper::groupTorqueDisable(std::vector<uint8_t> ids) {
+  std::vector<uint32_t> data(ids.size(), 0);
+  this->groupWriteMotor(ids, data, 64, 1);
 }
 
 void DynamixelHelper::setAngle(uint8_t id, double val) {
@@ -117,32 +75,19 @@ double DynamixelHelper::getAngle(uint8_t id) {
   return readMotor(id, 132) * 0.088 * M_PI / 180.0;
 }
 
-void DynamixelHelper::groupSetAngle(vector<uint8_t> ids, vector<double> vals) {
-  // Convert ids vector into basic array for low level dynamixel communication
-  auto *ids_array = new uint8_t[ids.size()];
-  for (int i = 0; i < ids.size(); i++)
-    ids_array[i] = ids[i];
-
-  uint32_t data[ids.size()];
-
-  for (int i = 0; i < ids.size(); i++)
+void DynamixelHelper::groupSetAngle(std::vector<uint8_t> ids,
+                                    std::vector<double> vals) {
+  std::vector<uint32_t> data(ids.size());
+  for (size_t i = 0; i < ids.size(); i++)
     data[i] = (uint32_t)(vals[i] * 180.0 / M_PI / 0.088);
 
-  groupWriteMotor(ids_array, ids.size(), data, 116, 4);
-
-  // Clean up
-  delete[] ids_array;
+  groupWriteMotor(ids, data, 116, 4);
 }
 
-vector<double> DynamixelHelper::groupGetAngle(vector<uint8_t> ids) {
-  // Convert ids vector into basic array for low level dynamixel communication
-  auto *ids_array = new uint8_t[ids.size()];
-  for (int i = 0; i < ids.size(); i++)
-    ids_array[i] = ids[i];
-
-  uint32_t *retrieved_data = groupReadMotor(ids_array, ids.size(), 132, 4);
-  vector<double> present_positions;
-  for (int i = 0; i < ids.size(); i++)
+std::vector<double> DynamixelHelper::groupGetAngle(std::vector<uint8_t> ids) {
+  std::vector<uint32_t> retrieved_data = groupReadMotor(ids, 132, 4);
+  std::vector<double> present_positions(retrieved_data.size());
+  for (size_t i = 0; i < retrieved_data.size(); i++)
     present_positions.push_back(retrieved_data[i] * 0.088 * M_PI / 180.0);
 
   return present_positions;
@@ -192,14 +137,14 @@ uint32_t DynamixelHelper::readMotor(uint8_t id, uint16_t address) {
   return present_position;
 }
 
-void DynamixelHelper::groupWriteMotor(uint8_t *ids, size_t ids_size,
-                                      uint32_t *data, uint16_t address,
-                                      uint16_t byte_size) {
+void DynamixelHelper::groupWriteMotor(std::vector<uint8_t> ids,
+                                      std::vector<uint32_t> data,
+                                      uint16_t address, uint16_t byte_size) {
   dynamixel::GroupSyncWrite groupSyncWrite(
       this->portHandler, this->packetHandler, address, byte_size);
 
-  uint8_t param_data[byte_size];
-  for (int i = 0; i < (int)ids_size; i++) {
+  std::vector<uint8_t> param_data(byte_size);
+  for (size_t i = 0; i < ids.size(); i++) {
     // Convert data to raw data for transfer
     for (int j = 0; j < byte_size; j++) {
       if (j % 2 == 0) {
@@ -216,7 +161,7 @@ void DynamixelHelper::groupWriteMotor(uint8_t *ids, size_t ids_size,
     }
 
     // Add each goal to each motor write parameter
-    this->addparam_result = groupSyncWrite.addParam(ids[i], param_data);
+    this->addparam_result = groupSyncWrite.addParam(ids[i], &param_data[0]);
     if (!this->addparam_result) {
       std::cerr << "[ID: " << ids[i] << "] GroupSyncWrite AddParam failed"
                 << std::endl;
@@ -235,16 +180,15 @@ void DynamixelHelper::groupWriteMotor(uint8_t *ids, size_t ids_size,
   groupSyncWrite.clearParam();
 }
 
-uint32_t *DynamixelHelper::groupReadMotor(uint8_t *ids, size_t ids_size,
-                                          uint16_t address,
-                                          uint16_t byte_size) {
-  dynamixel::GroupSyncRead groupSyncRead(portHandler, packetHandler, address,
-                                         byte_size);
+std::vector<uint32_t> DynamixelHelper::groupReadMotor(std::vector<uint8_t> ids,
+                                                      uint16_t address,
+                                                      uint16_t byte_size) {
+  dynamixel::GroupSyncRead groupSyncRead(this->portHandler, this->packetHandler,
+                                         address, byte_size);
 
-  uint32_t *received_data = new uint32_t[ids_size];
-
+  std::vector<uint32_t> received_data(ids.size());
   // Add motors to groupsyncread for present position reading
-  for (int i = 0; i < (int)ids_size; i++) {
+  for (size_t i = 0; i < ids.size(); i++) {
     this->addparam_result = groupSyncRead.addParam(ids[i]);
     if (!this->addparam_result) {
       std::cerr << "[ID: " << ids[i] << "] GroupSyncRead AddParam failed"
@@ -261,7 +205,7 @@ uint32_t *DynamixelHelper::groupReadMotor(uint8_t *ids, size_t ids_size,
   }
 
   // Check if GroupSyncRead data is available for each motor and save value
-  for (int i = 0; i < (int)ids_size; i++) {
+  for (size_t i = 0; i < ids.size(); i++) {
     this->getdata_result =
         groupSyncRead.isAvailable(ids[i], address, byte_size);
     if (!this->getdata_result) {
