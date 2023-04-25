@@ -1,22 +1,19 @@
 import os
 
-from ament_index_python.packages import get_package_share_path
-
 from launch import LaunchDescription
-from launch.substitutions import Command
-
+from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
-from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
-    wx200_control_path = get_package_share_path("wx200_control")
-    urdf_path = os.path.join(wx200_control_path, "urdf/wx200.urdf.xml")
+    wx200_control_share_path = FindPackageShare(
+        "wx200_control").find("wx200_control")
+    urdf_path = os.path.join(wx200_control_share_path, "urdf/wx200.urdf.xml")
     rviz_config_path = os.path.join(
-        wx200_control_path, "rviz/urdf.rviz.yaml")
+        wx200_control_share_path, "rviz/urdf.rviz.yaml")
 
-    robot_description = ParameterValue(
-        Command(["cat ", urdf_path]), value_type=str)
+    with open(urdf_path, 'r') as infp:
+        robot_description = infp.read()
 
     motor_writer = Node(
         package="wx200_control",
@@ -36,12 +33,6 @@ def generate_launch_description():
         parameters=[{"robot_description": robot_description}]
     )
 
-    world_publisher = Node(
-        package="tf2_ros",
-        executable="static_transform_publisher",
-        arguments=['--frame-id "world"', '--child-frame-id "base_link"']
-    )
-
     rviz = Node(
         package="rviz2",
         executable="rviz2",
@@ -51,9 +42,8 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        motor_writer,
+        # motor_writer,
         state_publisher,
-        world_publisher,
         robot_state_publisher,
         rviz
     ])

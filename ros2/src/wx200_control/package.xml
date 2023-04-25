@@ -17,8 +17,6 @@
   <depend>geometry_msgs</depend>
   <depend>dynamixel_sdk</depend>
   <depend>robot_state_publisher</depend>
-  <depend>tf2</depend>
-  <depend>tf2_ros</depend>
   <depend>wx200_control_interfaces</depend>
 
   <export>
