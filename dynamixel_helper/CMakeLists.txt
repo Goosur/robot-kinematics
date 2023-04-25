@@ -1,23 +1,12 @@
 cmake_minimum_required(VERSION 3.18)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+project(dynamixel_helper)
 
-project(DynamixelHelper)
+add_library(dynamixel_helper SHARED ./src/dynamixel_helper.cpp)
+
+set_target_properties(dynamixel_helper PROPERTIES PUBLIC_HEADER ./include/dynamixel_helper/dynamixel_helper.h)
+target_link_libraries(dynamixel_helper PRIVATE dxl_x64_cpp rt)
 
 include(GNUInstallDirs)
-
-add_library(DynamixelHelper SHARED dynamixel_helper.cpp)
-set_target_properties(DynamixelHelper PROPERTIES PUBLIC_HEADER dynamixel_helper.h)
-
-# Link dynamixel sdk
-include_directories(/usr/local/include/dynamixel_sdk)
-target_link_libraries(DynamixelHelper
-    dxl_x64_cpp
-    rt
-)
-
-# Install to system (/usr/local/lib and /usr/local/include)
-install(
-    TARGETS DynamixelHelper
+install(TARGETS dynamixel_helper
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/dynamixel_helper)

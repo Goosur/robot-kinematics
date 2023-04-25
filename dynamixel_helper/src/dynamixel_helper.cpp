@@ -1,4 +1,4 @@
-#include "dynamixel_helper.h"
+#include "dynamixel_helper/dynamixel_helper.h"
 #include <cmath>
 #include <iostream>
 
