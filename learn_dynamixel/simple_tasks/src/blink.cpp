@@ -2,7 +2,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include <dynamixel_helper.h>
+#include <dynamixel_helper/dynamixel_helper.h>
 #include <iostream>
 
 // Get character input
@@ -25,7 +25,7 @@ int main() {
   const char port[] = "/dev/ttyUSB0";
   DynamixelHelper dh(port);
 
-  vector<uint8_t> motorIDs{1, 2, 4, 5, 6};
+  std::vector<uint8_t> motorIDs{1, 2, 4, 5, 6};
 
   dh.openPort();
   dh.setBaudrate(1000000);

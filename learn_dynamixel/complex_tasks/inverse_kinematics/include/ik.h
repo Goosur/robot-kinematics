@@ -3,7 +3,6 @@
 
 #include "fk.h"
 #include <eigen3/Eigen/Eigen>
-#include <eigen3/Eigen/src/Core/Matrix.h>
 
 using namespace std;
 

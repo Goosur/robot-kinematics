@@ -1,21 +1,8 @@
-cmake_minimum_required(VERSION 3.18)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# Set project name
-project(record_hand_coordinates)
-
-# Add project executable
-add_executable(${PROJECT_NAME}
-    ${PROJECT_NAME}.cpp
-    fk.cpp
-    fk.h)
-
-# Link shared libraries and include headers
-# Dynamixel sdk and helper installed here
-link_directories(/usr/local/lib)
-include_directories(/usr/local/include)
-
-# Link libraries to project
-target_link_libraries(${PROJECT_NAME}
-    DynamixelHelper
-    dxl_x64_cpp) # DynamixelSDK
+add_executable(forward_kinematics
+    ./src/record_hand_coordinates.cpp
+    ./src/fk.cpp)
+target_include_directories(forward_kinematics
+    PUBLIC ./include/)
+find_package(Eigen3 REQUIRED NO_MODULE)
+target_link_libraries(forward_kinematics
+    Eigen3::Eigen)

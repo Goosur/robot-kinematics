@@ -1,23 +1,9 @@
-cmake_minimum_required(VERSION 3.18)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# Set project name
-project(inverse_kinematics)
-
-# Add project executable
-add_executable(${PROJECT_NAME}
-    main.cpp
-    ik.cpp
-    ik.h
-    fk.cpp
-    fk.h)
-
-# Link shared libraries and include headers
-# Dynamixel sdk and helper installed here
-link_directories(/usr/local/lib)
-include_directories(/usr/local/include)
-
-# Link libraries to project
-target_link_libraries(${PROJECT_NAME}
-    DynamixelHelper
-    dxl_x64_cpp) # DynamixelSDK
+add_executable(inverse_kinematics
+    ./src/main.cpp
+    ./src/ik.cpp
+    ./src/fk.cpp)
+target_include_directories(inverse_kinematics
+    PUBLIC ./include/)
+find_package(Eigen3 REQUIRED NO_MODULE)
+target_link_libraries(inverse_kinematics
+    Eigen3::Eigen)

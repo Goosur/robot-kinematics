@@ -1,4 +1,4 @@
-#include <dynamixel_helper.h>
+#include <dynamixel_helper/dynamixel_helper.h>
 #include <fstream>
 #include <iostream>
 
@@ -14,8 +14,8 @@ int main(int argc, char **argv) {
   const char port[] = "/dev/ttyUSB0";
   DynamixelHelper dh(port);
 
-  vector<uint8_t> motor_ids{1, 2, 4, 5, 6};
-  vector<double> current_joint_angles;
+  std::vector<uint8_t> motor_ids{1, 2, 4, 5, 6};
+  std::vector<double> current_joint_angles;
 
   dh.openPort();
   dh.setBaudrate(1000000);

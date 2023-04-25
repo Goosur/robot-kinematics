@@ -1,6 +1,6 @@
 #include <cmath>
-#include <dynamixel_helper.h>
-#include "motion_primitives.h"
+#include <dynamixel_helper/dynamixel_helper.h>
+#include "../include/motion_primitives.h"
 
 int main() {
   // Initialize Dynamixel Helper

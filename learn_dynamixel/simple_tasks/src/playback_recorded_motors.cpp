@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "dynamixel_helper.h"
+#include <dynamixel_helper/dynamixel_helper.h>
 
 int main(int argc, char **argv) {
   // Initialize dynamixel helper
@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
   std::ifstream f(argv[1]);
 
   // Position data
-  vector<uint8_t> motor_ids{1, 2, 4, 5, 6};
+  std::vector<uint8_t> motor_ids{1, 2, 4, 5, 6};
 
   // Distance between current position and goal position that is considered
   // close enough to the goal
@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 
     // Take each substring from the current line and convert it to an array of
     // doubles
-    vector<double> new_joint_angles;
+    std::vector<double> new_joint_angles;
     while (element != nullptr) {
       new_joint_angles.push_back(std::stod(element));
       element = strtok(nullptr, ",");
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 
     // Wait until goal is reached
     bool still_moving;
-    vector<double> current_joint_angles;
+    std::vector<double> current_joint_angles;
     do {
       still_moving = false;
       current_joint_angles = dh.groupGetAngle(motor_ids);

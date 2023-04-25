@@ -1,11 +1,11 @@
-#include "fk.h"
+#include "../include/fk.h"
 
 /**
  * Generate 2d array of Denavit-Hartenberg parameters from alphas, as, ds, and
  * thetas.
  */
-vector<array<double, 4>> FK::generate_parameters(const vector<double> &thetas) {
-  vector<array<double, 4>> parameters;
+std::vector<std::array<double, 4>> FK::generate_parameters(const std::vector<double> &thetas) {
+  std::vector<std::array<double, 4>> parameters;
   for (int i = 0; i < thetas.size(); i++)
     parameters.push_back({this->alpha[i], this->a[i], this->d[i], thetas[i]});
   return parameters;
@@ -17,7 +17,7 @@ vector<array<double, 4>> FK::generate_parameters(const vector<double> &thetas) {
  * Returns transformation matrix for joint i-1 to i
  */
 Eigen::Matrix4d
-FK::generate_dh_transform(const array<double, 4> &joint_parameters) {
+FK::generate_dh_transform(const std::array<double, 4> &joint_parameters) {
   Eigen::Matrix4d T;
   T << cos(joint_parameters[3]), -sin(joint_parameters[3]), 0.0,
       joint_parameters[1], sin(joint_parameters[3]) * cos(joint_parameters[0]),
@@ -35,10 +35,10 @@ FK::generate_dh_transform(const array<double, 4> &joint_parameters) {
 /**
  * Computes current 3d coordinates of end effector using current joint angles
  */
-array<double, 3>
-FK::get_end_effector_coordinates(const vector<double> &joint_angles) {
+std::array<double, 3>
+FK::get_end_effector_coordinates(const std::vector<double> &joint_angles) {
   // Get parameters for each joint
-  vector<array<double, 4>> parameters = this->generate_parameters(joint_angles);
+  std::vector<std::array<double, 4>> parameters = this->generate_parameters(joint_angles);
 
   // Start with transform from world to first join
   Eigen::Matrix4d T_end_effector = this->generate_dh_transform(parameters[0]);
