@@ -1,4 +1,4 @@
-#include "../include/fk.h"
+#include "fk.h"
 
 /**
  * Generate 2d array of Denavit-Hartenberg parameters from alphas, as, ds, and

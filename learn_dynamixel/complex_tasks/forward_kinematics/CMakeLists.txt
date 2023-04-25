@@ -1,8 +1,12 @@
-add_executable(forward_kinematics
-    ./src/record_hand_coordinates.cpp
-    ./src/fk.cpp)
-target_include_directories(forward_kinematics
-    PUBLIC ./include/)
+cmake_minimum_required(VERSION 3.18)
+project(forward_kinematics)
+
 find_package(Eigen3 REQUIRED NO_MODULE)
-target_link_libraries(forward_kinematics
+
+add_executable(record_hand_coordinates
+    ./src/main.cpp
+    ./src/fk.cpp)
+target_link_libraries(record_hand_coordinates
+    dynamixel_helper
+    dxl_x64_cpp
     Eigen3::Eigen)

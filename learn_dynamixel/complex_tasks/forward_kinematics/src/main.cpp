@@ -1,4 +1,4 @@
-#include "../include/fk.h"
+#include "fk.h"
 #include <dynamixel_helper/dynamixel_helper.h>
 #include <fstream>
 #include <iostream>
