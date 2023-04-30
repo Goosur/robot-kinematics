@@ -1,7 +1,8 @@
+#include <cmath>
+
+#include "dynamixel_helper/dynamixel_helper.h"
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
-#include "dynamixel_helper/dynamixel_helper.h"
-#include <cmath>
 
 // Change to usb device that appears when dynamixel controller is pluggied in
 #define DEVICE_PORT "/dev/ttyUSB0"
@@ -29,7 +30,7 @@ private:
 
     auto message = sensor_msgs::msg::JointState();
     message.header.stamp = this->get_clock()->now();
-    message.name = {"waist_joint",       "shoulder_joint",   "elbow_joint",
+    message.name = {"waist_joint", "shoulder_joint", "elbow_joint",
                     "wrist_angle_joint", "wrist_roll_joint"};
     message.position = angles;
     publisher->publish(message);

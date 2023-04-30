@@ -10,9 +10,7 @@ endif ()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(geometry_msgs REQUIRED)
 find_package(dynamixel_sdk REQUIRED)
 find_package(dynamixel_helper REQUIRED)
 find_package(wx200_control_interfaces REQUIRED)
@@ -20,18 +18,15 @@ find_package(wx200_control_interfaces REQUIRED)
 add_executable(multi_motor_writer src/motor_pub.cpp)
 ament_target_dependencies(multi_motor_writer
         rclcpp
-        std_msgs
-        dynamixel_sdk
         wx200_control_interfaces
+        dynamixel_sdk
         dynamixel_helper)
 
 add_executable(state_publisher src/state_publisher.cpp)
 ament_target_dependencies(state_publisher
         rclcpp
         sensor_msgs
-        geometry_msgs
         dynamixel_sdk
-        wx200_control_interfaces
         dynamixel_helper)
 
 install(TARGETS
