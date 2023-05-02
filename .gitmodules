@@ -1,3 +1,4 @@
 [submodule "ros2/src/dynamixel_sdk"]
 	path = ros2/src/dynamixel_sdk
 	url = https://github.com/ROBOTIS-GIT/DynamixelSDK.git
+	branch = humble-devel
