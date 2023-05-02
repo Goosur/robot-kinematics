@@ -42,12 +42,12 @@ To build in run this project run the following commands:
 ```bash
 # Get the project and move to the root of the ros workspace
 ~ $ git clone https://github.com/devon-g/robot-kinematics
-~ $ cd robot-kinematics/ros2/
+~ $ cd robot-kinematics/ros2_ws/
 
 # Build the project and source the local install
-~/robot-kinematics/ros2/ $ colcon build
-~/robot-kinematics/ros2/ $ source install/setup.bash
+~/robot-kinematics/ros2_ws/ $ colcon build
+~/robot-kinematics/ros2_ws/ $ source install/setup.bash
 
 # Launch the ros system
-~/robot-kinematics/ros2/ $ ros2 launch wx200_control control.launch.py
+~/robot-kinematics/ros2_ws/ $ ros2 launch wx200_control control.launch.py
 ```
