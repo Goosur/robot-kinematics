@@ -13,7 +13,7 @@ public:
   /**
    * @brief Get a dynamixel helper unique to the requested device
    */
-  DynamixelHelper *getHelper(std::string port);
+  static DynamixelHelper *getHelper(std::string port);
   ~DynamixelHelper();
 
   /**

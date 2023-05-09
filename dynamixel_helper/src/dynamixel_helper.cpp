@@ -17,11 +17,11 @@ DynamixelHelper *DynamixelHelper::getHelper(std::string port) {
   DynamixelHelper *helper = nullptr;
 
   // Create and/or return unique helper for specific port
-  if (this->helpers.contains(port)) {
+  if (DynamixelHelper::helpers.contains(port)) {
     helper = helpers.at(port);
   } else {
     helper = new DynamixelHelper(port);
-    helpers.emplace(std::make_pair(port, helper));
+    DynamixelHelper::helpers.emplace(std::make_pair(port, helper));
   }
 
   return helper;
