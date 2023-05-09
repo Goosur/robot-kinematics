@@ -1,9 +1,9 @@
-#include "dynamixel_helper/dynamixel_helper.h"
+#include "../include/dynamixel_helper/dynamixel_helper.h"
 #include <cmath>
 #include <iostream>
 
-DynamixelHelper::DynamixelHelper(const char *port) {
-  this->portHandler = dynamixel::PortHandler::getPortHandler(port);
+DynamixelHelper::DynamixelHelper(std::string port) {
+  this->portHandler = dynamixel::PortHandler::getPortHandler(port.c_str());
   this->packetHandler = dynamixel::PacketHandler::getPacketHandler();
 }
 
@@ -11,6 +11,20 @@ DynamixelHelper::~DynamixelHelper() {
   this->portHandler->closePort();
   delete this->portHandler;
   delete this->packetHandler;
+}
+
+DynamixelHelper *DynamixelHelper::getHelper(std::string port) {
+  DynamixelHelper *helper = nullptr;
+
+  // Create and/or return unique helper for specific port
+  if (this->helpers.contains(port)) {
+    helper = helpers.at(port);
+  } else {
+    helper = new DynamixelHelper(port);
+    helpers.emplace(std::make_pair(port, helper));
+  }
+
+  return helper;
 }
 
 void DynamixelHelper::openPort() {
@@ -92,12 +106,6 @@ std::vector<double> DynamixelHelper::groupGetAngle(std::vector<uint8_t> ids) {
 
   return present_positions;
 }
-
-/*
- *
- * PRIVATE METHODS
- *
- */
 
 void DynamixelHelper::writeMotor(uint8_t id, uint16_t address, uint32_t data,
                                  uint16_t byte_size) {
@@ -183,8 +191,8 @@ void DynamixelHelper::groupWriteMotor(std::vector<uint8_t> ids,
 std::vector<uint32_t> DynamixelHelper::groupReadMotor(std::vector<uint8_t> ids,
                                                       uint16_t address,
                                                       uint16_t byte_size) {
-  dynamixel::GroupSyncRead groupSyncRead(this->portHandler, this->packetHandler,
-                                         address, byte_size);
+  dynamixel::GroupSyncRead groupSyncRead(
+      this->portHandler, this->packetHandler, address, byte_size);
 
   std::vector<uint32_t> received_data(ids.size());
   // Add motors to groupsyncread for present position reading
