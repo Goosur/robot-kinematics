@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import os, sys
+import os
+import sys
+
 
 def read_file(input_file):
     """
@@ -23,10 +25,10 @@ def read_file(input_file):
 
 def regression(n, x, y, title):
 
-    plt.style.use('dark_background')
+    # plt.style.use('dark_background')
     fig, ax = plt.subplots(2, 1)
     fig.suptitle(title)
-    ax[0].plot(x, y, 'ow', label="Averaged Joint States")
+    ax[0].plot(x, y, 'o', label="Averaged Joint States")
     ax[0].set_xlabel("Time")
     ax[0].set_ylabel("Joint Angle")
     ax[0].grid()
@@ -52,8 +54,9 @@ def regression(n, x, y, title):
     a_synth = h
     # Synthetic a values
     for i in range(n):
-        a_synth = np.hstack((np.exp(-(x_synth - mean[i])**2 / (2 * std[i]**2)), a_synth))
-    
+        a_synth = np.hstack(
+            (np.exp(-(x_synth - mean[i])**2 / (2 * std[i]**2)), a_synth))
+
     y_synth = a_synth @ w
 
     # Plot smooth regression line
@@ -65,11 +68,12 @@ def regression(n, x, y, title):
 
     reversed_mean = np.flip(mean)
     reversed_std = np.flip(std)
-    
+
     print("c++ equation: ")
     for i in range(w.shape[0]):
         if i != (w.shape[0] - 1):
-            print(f"{w[i][0]} * exp(-pow(phase - {reversed_mean[i]}, 2) / (2 * pow({reversed_std[i]}, 2))) + ")
+            print(
+                f"{w[i][0]} * exp(-pow(phase - {reversed_mean[i]}, 2) / (2 * pow({reversed_std[i]}, 2))) + ")
         else:
             print(f"{w[i][0]}")
     print("\n")
@@ -136,4 +140,3 @@ if __name__ == "__main__":
     main(sys.argv[1:])
     plt.tight_layout()
     plt.show()
-

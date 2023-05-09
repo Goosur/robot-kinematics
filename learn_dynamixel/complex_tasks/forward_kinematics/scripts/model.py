@@ -15,16 +15,13 @@ def wx200_parameters(motor_1_angle, motor_2_angle, motor_4_angle, motor_5_angle,
     :returns: WidowX 200 DH parameters
     :rtype: numpy.ndarray
     """
-
     parameters = np.array([
         # alpha i - 1, a i - 1, d i, theta i
-        [0.0, 0.0, 113.25, motor_1_angle - np.pi],
-        [-np.pi / 2, 0.0, 0.0, motor_2_angle - 3 * np.pi / 2],
-        [np.pi, 200.0, 0.0, -np.pi / 2],
-        [0.0, 50.0, 0.0, motor_4_angle - np.pi],
-        [0.0, 200.0, 0.0, motor_5_angle - np.pi / 2],
-        [np.pi / 2, 0.0, 0.0, motor_6_angle - np.pi / 2],
-        [0.0, 0.0, 174.15, 0.0]
+        [0.0, 0.0, 0.0, motor_1_angle],
+        [np.pi / 2, 0.0, 0.0, motor_2_angle],
+        [0.0, 206.16, 0.0, motor_4_angle],
+        [0.0, 200.0, 0.0, motor_5_angle],
+        [np.pi / 2, 0.0, 0.0, motor_6_angle],
     ])
 
     return np.copy(parameters)
@@ -103,7 +100,7 @@ def plot_model(frames):
 
 def main():
     # Generate WidowX 200 Denavit Hartenberg parameters
-    p = wx200_parameters(np.pi, np.pi, np.pi, np.pi, np.pi)
+    p = wx200_parameters(0.0, 0.0 + np.cos(50/200), 0.0 - np.cos(50/200), 0.0, 0.0)
 
     # Collect transformation matrices from world to each joint
     T = [np.array([])] * p.shape[0]
