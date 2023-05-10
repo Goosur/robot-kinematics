@@ -8,8 +8,7 @@
 
 int main(int argc, char **argv) {
   // Initialize dynamixel helper
-  const char port[] = "/dev/ttyUSB0";
-  DynamixelHelper dh(port);
+  DynamixelHelper dh("/dev/ttyUSB0");
 
   // Open recorded joint angle csv
   std::ifstream f(argv[1]);
@@ -42,6 +41,10 @@ int main(int argc, char **argv) {
       new_joint_angles.push_back(std::stod(element));
       element = strtok(nullptr, ",");
     }
+    for (auto angle : new_joint_angles) {
+      std::cout << angle << '\t';
+    }
+    std::cout << std::endl;
 
     // Write this line's joint angles to the motors
     dh.groupSetAngle(motor_ids, new_joint_angles);
@@ -57,6 +60,7 @@ int main(int argc, char **argv) {
         still_moving |=
             std::abs(new_joint_angles[i] - current_joint_angles[i]) >
             moving_status_threshold;
+
     } while (still_moving);
   }
 

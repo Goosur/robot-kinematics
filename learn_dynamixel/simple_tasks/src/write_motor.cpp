@@ -20,15 +20,13 @@ int getch() {
 }
 
 int main() {
-  const char port[] = "/dev/ttyUSB0";
-  DynamixelHelper dh(port);
+  DynamixelHelper dh("/dev/ttyUSB0");
 
   // Position data
   double present_position = 0.0;
   double goal_positions[] = {M_PI / 2, 3 * M_PI / 2};
 
   uint8_t motor_id = 6; // Wrist rotate
-  double moving_status_threshold = 20 * 0.088 * M_PI / 180.0;
 
   // Initialize connection
   dh.openPort();
@@ -47,16 +45,13 @@ int main() {
     dh.setAngle(motor_id, goal_positions[index]);
 
     // Wait until goal is reached
-    do {
-      present_position = dh.getAngle(motor_id);
-      std::clog << "[ID: " << (int)motor_id
-                << "] Goal Position: " << goal_positions[index]
-                << ", Present Position: " << present_position
-                << ", Distance to Goal: "
-                << std::abs(goal_positions[index] - present_position)
+    bool moving = true;
+    while (moving) {
+      std::cout << "Distance from goal (rad): "
+                << std::abs(goal_positions[index] - dh.getAngle(motor_id))
                 << std::endl;
-    } while (std::abs(goal_positions[index] - present_position) >
-             moving_status_threshold);
+      moving = dh.readMotor(motor_id, 128);
+    }
     std::clog << "Finished moving" << std::endl;
 
     // Switch the Goal Position

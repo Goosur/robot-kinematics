@@ -11,8 +11,7 @@ int main(int argc, char **argv) {
   f << "waist,shoulder,elbow,wrist_angle,wrist_rotate" << std::endl;
 
   // Initialize dynamixel helper
-  const char port[] = "/dev/ttyUSB0";
-  DynamixelHelper dh(port);
+  DynamixelHelper dh("/dev/ttyUSB0");
 
   std::vector<uint8_t> motor_ids{1, 2, 4, 5, 6};
   std::vector<double> current_joint_angles;

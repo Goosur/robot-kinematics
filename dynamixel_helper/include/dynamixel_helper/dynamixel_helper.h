@@ -1,19 +1,20 @@
 #ifndef DYNAMIXEL_HELPER_H
 #define DYNAMIXEL_HELPER_H
 
-#include <cstdint>
 #include <dynamixel_sdk/dynamixel_sdk.h>
-#include <map>
-#include <memory>
 #include <string>
 #include <vector>
 
 class DynamixelHelper {
 public:
   /**
-   * @brief Get a dynamixel helper unique to the requested device
+   * Create new dynamixel helper for specified device
    */
-  static DynamixelHelper *getHelper(std::string port);
+  DynamixelHelper(std::string port);
+
+  /**
+   * @brief Close porthandler and delete handler pointers.
+   */
   ~DynamixelHelper();
 
   /**
@@ -145,20 +146,9 @@ public:
                                        uint16_t address, uint16_t byte_size);
 
 private:
-  DynamixelHelper(std::string port);
-
-  // One unique helper for each physical device
-  static std::map<std::string, DynamixelHelper *> helpers;
-
   // Serial communication handlers
   dynamixel::PortHandler *portHandler;
   dynamixel::PacketHandler *packetHandler;
-
-  // Communication results/errors
-  int comm_result = COMM_TX_FAIL;
-  bool addparam_result = false;
-  bool getdata_result = false;
-  uint8_t error = 0;
 };
 
 #endif

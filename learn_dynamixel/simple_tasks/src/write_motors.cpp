@@ -21,15 +21,14 @@ int getch() {
 }
 
 int main() {
-  const char port[] = "/dev/ttyUSB0";
-  DynamixelHelper dh(port);
+  DynamixelHelper dh("/dev/ttyUSB0");
 
   // Position data
   std::vector<uint8_t> motor_ids{1, 2, 4, 5, 6};
   std::vector<double> present_positions;
   std::vector<std::vector<double>> goal_positions{
       {M_PI, M_PI, M_PI, M_PI, M_PI},
-      {0 + M_PI, -1.88 + M_PI, 1.5 + M_PI, 0.8 + M_PI, 0 + M_PI},
+      {M_PI, 1.8, 1.5, 2.6, M_PI},
   };
 
   double moving_status_threshold = 2 * 20 * 0.088 * M_PI / 180.0;

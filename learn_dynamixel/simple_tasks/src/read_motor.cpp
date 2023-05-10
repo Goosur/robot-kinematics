@@ -3,8 +3,7 @@
 
 int main() {
   // Initialize dyanmixel helper on USB0 port
-  const char port[] = "/dev/ttyUSB0";
-  DynamixelHelper dh(port);
+  DynamixelHelper dh("/dev/ttyUSB0");
 
   // We will be moving motor 4 which is the elbow of the widowx200
   uint8_t motor_id = 4;

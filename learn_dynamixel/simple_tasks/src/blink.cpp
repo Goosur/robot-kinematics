@@ -21,9 +21,7 @@ int getch() {
 }
 
 int main() {
-
-  const char port[] = "/dev/ttyUSB0";
-  DynamixelHelper dh(port);
+  DynamixelHelper dh("/dev/ttyUSB0");
 
   std::vector<uint8_t> motorIDs{1, 2, 4, 5, 6};
 
@@ -40,7 +38,6 @@ int main() {
 
     // Toggle led on/off
     led_status = !led_status;
-
     if (led_status)
       dh.groupLedEnable(motorIDs);
     else
