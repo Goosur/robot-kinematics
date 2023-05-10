@@ -4,23 +4,25 @@ import matplotlib.pyplot as plt
 
 
 def fk_transform(alpha, a, d, theta):
-    return Matrix([
-        [cos(theta), -sin(theta), 0, a],
-        [sin(theta)*cos(alpha), cos(theta)*cos(alpha), -sin(alpha), -sin(alpha)*d],
-        [sin(theta)*sin(alpha), cos(theta)*sin(alpha), cos(alpha), cos(alpha)*d],
+    return sp.Matrix([
+        [sp.cos(theta), -sp.sin(theta), 0, a],
+        [sp.sin(theta)*sp.cos(alpha), sp.cos(theta) *
+         sp.cos(alpha), -sp.sin(alpha), -sp.sin(alpha)*d],
+        [sp.sin(theta)*sp.sin(alpha), sp.cos(theta) *
+         sp.sin(alpha), sp.cos(alpha), sp.cos(alpha)*d],
         [0, 0, 0, 1]
     ])
 
 
 def sympy_stuff():
-    t1, t2, t4, t5, t6 = symbols("theta1,theta2,theta4,theta5,theta6")
+    t1, t2, t4, t5, t6 = sp.symbols("theta1,theta2,theta4,theta5,theta6")
     dh = [
         [0, 0, 113.25, t1],
-        [pi/2, 0, 0, t2 - pi/2],
-        [0, 200, 0, pi/2],
-        [0, 50, 0, t4 - pi],
-        [0, 200, 0, t5 - pi/2],
-        [pi/2, 0, 0, t6],
+        [sp.pi/2, 0, 0, t2 - sp.pi/2],
+        [0, 200, 0, sp.pi/2],
+        [0, 50, 0, t4 - sp.pi],
+        [0, 200, 0, t5 - sp.pi/2],
+        [sp.pi/2, 0, 0, t6],
         [0, 0, 174.15, 0]
     ]
 
@@ -28,38 +30,43 @@ def sympy_stuff():
     for i in range(1, 7):
         T = T @ fk_transform(dh[i][0], dh[i][1], dh[i][2], dh[i][3])
 
-    T = simplify(T)
+    T = sp.simplify(T)
     print("\n0 to 7 Transform Matrix")
-    pprint(T)
+    sp.pprint(T)
 
     p = T[0:3, 3]
-    roll_pitch_yaw = Matrix([[t6], [t2 + t4 + t5], [t1]])
-    roll_pitch = Matrix([[t6], [t2 + t4 + t5]])
+    # roll_pitch_yaw = sp.Matrix([[t6], [t2 + t4 + t5], [t1]])
+    roll_pitch = sp.Matrix([[t6], [t2 + t4 + t5]])
 
-    pose = Matrix.vstack(p, roll_pitch)
+    pose = sp.Matrix.vstack(p, roll_pitch)
 
-    J = simplify(pose.jacobian(Matrix([t1, t2, t4, t5, t6])))
+    J = sp.simplify(pose.jacobian(sp.Matrix([t1, t2, t4, t5, t6])))
     print("\nJacobian Matrix")
-    pprint(J)
+    sp.pprint(J)
 
 
 # [theta1, theta2, theta4, theta5, theta6]
 # [  0   ,   1   ,   2   ,   3   ,   4   ]
 def jacobian(theta1, theta2, theta4, theta5, theta6):
     return np.array([
-        [(-200.0 * sin(theta2) - 50.0 * cos(theta2) + 200.0 * cos(theta2 + theta4) - 174.15 * cos(theta2 + theta4 + theta5)) * sin(theta1),
-         (-50.0 * sin(theta2) + 200.0 * sin(theta2 + theta4) - 174.15 * sin(theta2 + theta4 + theta5) + 200.0 * cos(theta2)) * cos(theta1),
-         (200.0 * sin(theta2 + theta4) - 174.15 * sin(theta2 + theta4 + theta5)) * cos(theta1),
-         -174.15 * sin(theta2 + theta4 + theta5) * cos(theta1), 0],
+        [(-200.0 * np.sin(theta2) - 50.0 * np.cos(theta2) + 200.0 * np.cos(theta2 + theta4) - 174.15 * np.cos(theta2 + theta4 + theta5)) * np.sin(theta1),
+         (-50.0 * np.sin(theta2) + 200.0 * np.sin(theta2 + theta4) - 174.15 *
+          np.sin(theta2 + theta4 + theta5) + 200.0 * np.cos(theta2)) * np.cos(theta1),
+         (200.0 * np.sin(theta2 + theta4) - 174.15 *
+          np.sin(theta2 + theta4 + theta5)) * np.cos(theta1),
+         -174.15 * np.sin(theta2 + theta4 + theta5) * np.cos(theta1), 0],
 
-        [(200.0 * sin(theta2) + 50.0 * cos(theta2) - 200.0 * cos(theta2 + theta4) + 174.15 * cos(theta2 + theta4 + theta5)) * cos(theta1),
-         (-50.0 * sin(theta2) + 200.0 * sin(theta2 + theta4) - 174.15 * sin(theta2 + theta4 + theta5) + 200.0 * cos(theta2)) * sin(theta1),
-         (200.0 * sin(theta2 + theta4) - 174.15 * sin(theta2 + theta4 + theta5)) * sin(theta1),
-         -174.15 * sin(theta1) * sin(theta2 + theta4 + theta5), 0],
+        [(200.0 * np.sin(theta2) + 50.0 * np.cos(theta2) - 200.0 * np.cos(theta2 + theta4) + 174.15 * np.cos(theta2 + theta4 + theta5)) * np.cos(theta1),
+         (-50.0 * np.sin(theta2) + 200.0 * np.sin(theta2 + theta4) - 174.15 *
+          np.sin(theta2 + theta4 + theta5) + 200.0 * np.cos(theta2)) * np.sin(theta1),
+         (200.0 * np.sin(theta2 + theta4) - 174.15 *
+          np.sin(theta2 + theta4 + theta5)) * np.sin(theta1),
+         -174.15 * np.sin(theta1) * np.sin(theta2 + theta4 + theta5), 0],
 
-        [0, 200.0 * sin(theta2) + 50.0 * cos(theta2) - 200.0 * cos(theta2 + theta4) + 174.15 * cos(theta2 + theta4 + theta5),
-         -200.0 * cos(theta2 + theta4) + 174.15 * cos(theta2 + theta4 + theta5),
-         174.15 * cos(theta2 + theta4 + theta5), 0],
+        [0, 200.0 * np.sin(theta2) + 50.0 * np.cos(theta2) - 200.0 * np.cos(theta2 + theta4) + 174.15 * np.cos(theta2 + theta4 + theta5),
+         -200.0 * np.cos(theta2 + theta4) + 174.15 *
+         np.cos(theta2 + theta4 + theta5),
+         174.15 * np.cos(theta2 + theta4 + theta5), 0],
 
         [0, 0, 0, 0, 1],
 
@@ -71,11 +78,11 @@ def jacobian(theta1, theta2, theta4, theta5, theta6):
 def fk_wx200(thetas):
     dh = [
         [0, 0, 113.25, thetas[0]],
-        [pi / 2, 0, 0, thetas[1] - pi / 2],
-        [0, 200, 0, pi / 2],
-        [0, 50, 0, thetas[2] - pi],
-        [0, 200, 0, thetas[3] - pi / 2],
-        [pi / 2, 0, 0, thetas[4]],
+        [np.pi / 2, 0, 0, thetas[1] - np.pi / 2],
+        [0, 200, 0, np.pi / 2],
+        [0, 50, 0, thetas[2] - np.pi],
+        [0, 200, 0, thetas[3] - np.pi / 2],
+        [np.pi / 2, 0, 0, thetas[4]],
         [0, 0, 174.15, 0]
     ]
 
@@ -141,7 +148,8 @@ def inverse_kinematics_stuff():
 
         if (np.abs(total_linear_change) > 0.1).any():
             # STEP 2
-            current_linear_change = (total_linear_change / np.linalg.norm(total_linear_change)) * x_max
+            current_linear_change = (
+                total_linear_change / np.linalg.norm(total_linear_change)) * x_max
             # print("Current Linear Change: ", current_linear_change)
 
             # STEP 3

@@ -1,5 +1,4 @@
 #include "ik.h"
-#include <eigen3/Eigen/src/Jacobi/Jacobi.h>
 
 Matrix5d IK::generate_jacobian(vector<double> thetas) {
   Matrix5d J{
