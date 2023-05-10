@@ -8,5 +8,4 @@ add_executable(record_hand_coordinates
     ./src/fk.cpp)
 target_link_libraries(record_hand_coordinates
     dynamixel_helper
-    dxl_x64_cpp
     Eigen3::Eigen)

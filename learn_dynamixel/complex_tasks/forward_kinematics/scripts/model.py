@@ -2,26 +2,33 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def wx200_parameters(motor_1_angle, motor_2_angle, motor_4_angle, motor_5_angle, motor_6_angle):
+def wx200_parameters(theta_1, theta_2, theta_3, theta_4, theta_5):
     """
     Generates Denavit Hartenberg parameters for the WidowX 200 robot arm given
     current motor rotation states.
 
-    :param float motor_1_angle: Current rotation of motor 1 
-    :param float motor_2_angle: Current rotation of motor (2 + 3) 
-    :param float motor_4_angle: Current rotation of motor 4 
-    :param float motor_5_angle: Current rotation of motor 5 
-    :param float motor_6_angle: Current rotation of motor 6 
+    :param float motor_1_angle: Current rotation of motor 1
+    :param float motor_2_angle: Current rotation of motor (2 + 3)
+    :param float motor_4_angle: Current rotation of motor 4
+    :param float motor_5_angle: Current rotation of motor 5
+    :param float motor_6_angle: Current rotation of motor 6
     :returns: WidowX 200 DH parameters
     :rtype: numpy.ndarray
     """
     parameters = np.array([
         # alpha i - 1, a i - 1, d i, theta i
-        [0.0, 0.0, 0.0, motor_1_angle],
-        [np.pi / 2, 0.0, 0.0, motor_2_angle],
-        [0.0, 206.16, 0.0, motor_4_angle],
-        [0.0, 200.0, 0.0, motor_5_angle],
-        [np.pi / 2, 0.0, 0.0, motor_6_angle],
+        # [0.0, 0.0, 0.0, theta_1],
+        # [np.pi / 2, 0.0, 0.0, theta_2 + np.pi/2 - np.sin(50/206.16)],
+        # [0.0, 206.16, 0.0, theta_3 - (np.pi/2 - np.sin(50/206.16))],
+        # [0.0, 200.0, 0.0, theta_4 - np.pi / 2],
+        # [np.pi / 2, 0.0, 0.0, theta_5],
+        # [0.0, 0.0, -174.15, 0.0]
+        [0.0, 0.0, 0.0, theta_1 - np.pi],
+        [np.pi / 2, 0.0, 0.0, theta_2 - np.pi/2 - np.sin(50/206.16)],
+        [0.0, 206.16, 0.0, theta_3 - 3*np.pi/2 + np.sin(50/206.16)],
+        [0.0, 200.0, 0.0, theta_4 - 3*np.pi/2],
+        [np.pi / 2, 0.0, 0.0, theta_5 - np.pi],
+        [0.0, 0.0, -174.15, 0.0]
     ])
 
     return np.copy(parameters)
@@ -42,8 +49,10 @@ def dh_transform(alpha, a, d, theta):
 
     transform = np.array([
         [np.cos(theta), -np.sin(theta), 0, a],
-        [np.sin(theta) * np.cos(alpha), np.cos(theta) * np.cos(alpha), -np.sin(alpha), -np.sin(alpha) * d],
-        [np.sin(theta) * np.sin(alpha), np.cos(theta) * np.sin(alpha), np.cos(alpha), np.cos(alpha) * d],
+        [np.sin(theta) * np.cos(alpha), np.cos(theta) *
+         np.cos(alpha), -np.sin(alpha), -np.sin(alpha) * d],
+        [np.sin(theta) * np.sin(alpha), np.cos(theta) *
+         np.sin(alpha), np.cos(alpha), np.cos(alpha) * d],
         [0, 0, 0, 1]
     ])
 
@@ -100,7 +109,8 @@ def plot_model(frames):
 
 def main():
     # Generate WidowX 200 Denavit Hartenberg parameters
-    p = wx200_parameters(0.0, 0.0 + np.cos(50/200), 0.0 - np.cos(50/200), 0.0, 0.0)
+    # p = wx200_parameters(0.0, 0.0, 0.0, 0.0, 0.0)
+    p = wx200_parameters(np.pi, np.pi, np.pi, np.pi, np.pi)
 
     # Collect transformation matrices from world to each joint
     T = [np.array([])] * p.shape[0]
@@ -109,12 +119,13 @@ def main():
             T[i] = dh_transform(*[p[i][j] for j in range(p.shape[1])])
         else:
             # Each matrix after the first builds off of the previous matrices
-            T[i] = T[i - 1] @ dh_transform(*[p[i][j] for j in range(p.shape[1])])
-    
+            T[i] = T[i - 1] @ dh_transform(*[p[i][j]
+                                           for j in range(p.shape[1])])
+
+    print(f"x: {T[2][0][3]}, y: {T[2][1][3]}, z: {T[2][2][3]}")
     # Plot model of arm
     plot_model(T)
 
 
 if __name__ == "__main__":
     main()
-
