@@ -1,11 +1,11 @@
+#include "motion_primitives.h"
 #include <cmath>
 #include <dynamixel_helper/dynamixel_helper.h>
-#include "motion_primitives.h"
+#include <functional>
 
 int main() {
   // Initialize Dynamixel Helper
-  const char port[] = "/dev/ttyUSB0";
-  DynamixelHelper dh(port);
+  DynamixelHelper dh("/dev/ttyUSB0");
 
   // Motor information
   vector<uint8_t> motor_ids{1, 2, 4, 5, 6};
@@ -13,55 +13,39 @@ int main() {
   vector<double> goal_positions;
   double moving_status_threshold = 10 * 20 * 0.088 * M_PI / 180.0;
 
+  vector<std::function<std::vector<double>(double phase)>> primitives;
+  primitives.push_back(motion_primitives::sleep_to_home);
+  primitives.push_back(motion_primitives::draw_x);
+  primitives.push_back(motion_primitives::draw_line);
+  primitives.push_back(motion_primitives::home_to_sleep);
+
   dh.openPort();
   dh.setBaudrate(1000000);
   dh.groupTorqueEnable(motor_ids);
 
   int steps = 0;
 
-  double dphase = 0.001;
+  double dphase = 0.005;
   double phase = 0.0;
-  while (phase < 1.0) {
-    // goal_positions = motion_primitives::draw_x(phase);
-    goal_positions = motion_primitives::sleep_to_home(phase);
-    // goal_positions = motion_primitives::home_to_sleep(phase);
-    // goal_positions = motion_primitives::draw_line(phase);
+  for (auto primitive : primitives) {
+    phase = 0.0;
+    while (phase < 1.0) {
+      goal_positions = primitive(phase);
 
-    dh.groupSetAngle(motor_ids, goal_positions);
+      dh.groupSetAngle(motor_ids, goal_positions);
 
-    bool still_moving = true;
-    do {
-      present_positions = dh.groupGetAngle(motor_ids);
+      bool still_moving = true;
+      do {
+        present_positions = dh.groupGetAngle(motor_ids);
 
-      still_moving = false;
-      for (int i = 0; i < motor_ids.size(); i++)
-        still_moving |= std::abs(goal_positions[i] - present_positions[i]) >
-                        moving_status_threshold;
-    } while (still_moving);
+        still_moving = false;
+        for (int i = 0; i < motor_ids.size(); i++)
+          still_moving |= std::abs(goal_positions[i] - present_positions[i]) >
+                          moving_status_threshold;
+      } while (still_moving);
 
-    phase += dphase;
-  }
-
-  phase = 0.0;
-  while (phase < 1.0) {
-    // goal_positions = motion_primitives::draw_x(phase);
-    // goal_positions = motion_primitives::sleep_to_home(phase);
-    goal_positions = motion_primitives::home_to_sleep(phase);
-    // goal_positions = motion_primitives::draw_line(phase);
-
-    dh.groupSetAngle(motor_ids, goal_positions);
-
-    bool still_moving = true;
-    do {
-      present_positions = dh.groupGetAngle(motor_ids);
-
-      still_moving = false;
-      for (int i = 0; i < motor_ids.size(); i++)
-        still_moving |= std::abs(goal_positions[i] - present_positions[i]) >
-                        moving_status_threshold;
-    } while (still_moving);
-
-    phase += dphase;
+      phase += dphase;
+    }
   }
 
   dh.groupTorqueDisable(motor_ids);
