@@ -2,26 +2,15 @@
 #define FK_H
 
 #include <array>
-#include <eigen3/Eigen/Eigen>
+#include <cmath>
 
-using namespace std;
+namespace FK {
 
-class FK {
-public:
-  FK(const vector<double> &alpha, const vector<double> &a,
-     const vector<double> &d)
-      : alpha(alpha), a(a), d(d) {}
-  array<double, 3>
-  get_end_effector_coordinates(const vector<double> &joint_angles);
+/**
+ * Pre-generated DH transform for the widowx 200 robot arm
+ */
+std::array<double, 3> where(const std::array<double, 5> &thetas);
 
-private:
-  vector<double> alpha;
-  vector<double> a;
-  vector<double> d;
-
-  vector<array<double, 4>> generate_parameters(const vector<double> &thetas);
-  Eigen::Matrix4d
-  generate_dh_transform(const array<double, 4> &joint_parameters);
-};
+} // namespace FK
 
 #endif

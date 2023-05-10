@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from PyQt6 import QtWidgets, QtCore
 import pyqtgraph as pg
 import sys
@@ -7,7 +9,7 @@ import sympy as sp
 
 # [theta1, theta2, theta3, theta4, theta5]
 def jacobian(thetas):
-    return np.array([[(1.0*174.15*np.cos(thetas[1] + thetas[2] + thetas[3]) + 1.0*200*np.cos(thetas[1] + thetas[2]) + 206.16*np.sin(thetas[1] - 0.240159419698206))*np.sin(thetas[0]), (1.0*174.15*np.sin(thetas[1] + thetas[2] + thetas[3]) + 1.0*200*np.sin(thetas[1] + thetas[2]) - 206.16*np.cos(thetas[1] - 0.240159419698206))*np.cos(thetas[0]), 1.0*(174.15*np.sin(thetas[1] + thetas[2] + thetas[3]) + 200*np.sin(thetas[1] + thetas[2]))*np.cos(thetas[0]), 1.0*174.15*np.sin(thetas[1] + thetas[2] + thetas[3])*np.cos(thetas[0]), 0], [(-1.0*174.15*np.cos(thetas[1] + thetas[2] + thetas[3]) - 1.0*200*np.cos(thetas[1] + thetas[2]) - 206.16*np.sin(thetas[1] - 0.240159419698206))*np.cos(thetas[0]), (1.0*174.15*np.sin(thetas[1] + thetas[2] + thetas[3]) + 1.0*200*np.sin(thetas[1] + thetas[2]) - 206.16*np.cos(thetas[1] - 0.240159419698206))*np.sin(thetas[0]), 1.0*(174.15*np.sin(thetas[1] + thetas[2] + thetas[3]) + 200*np.sin(thetas[1] + thetas[2]))*np.sin(thetas[0]), 1.0*174.15*np.sin(thetas[0])*np.sin(thetas[1] + thetas[2] + thetas[3]), 0], [0, 1.0*174.15*np.cos(thetas[1] + thetas[2] + thetas[3]) + 1.0*200*np.cos(thetas[1] + thetas[2]) + 206.16*np.sin(thetas[1] - 0.240159419698206), 1.0*174.15*np.cos(thetas[1] + thetas[2] + thetas[3]) + 1.0*200*np.cos(thetas[1] + thetas[2]), 1.0*174.15*np.cos(thetas[1] + thetas[2] + thetas[3]), 0], [0, 0, 0, 0, 1], [0, 1, 1, 1, 0]], dtype="float64")
+    return np.array([[1.0*(-174.15*sp.cos(thetas[1] + thetas[2] + thetas[3]) + 200*sp.cos(thetas[1] + thetas[2]) + 206.16*sp.sin(thetas[1] - 0.240159419698206))*sp.sin(thetas[0]), 1.0*(-174.15*sp.sin(thetas[1] + thetas[2] + thetas[3]) + 200*sp.sin(thetas[1] + thetas[2]) - 206.16*sp.cos(thetas[1] - 0.240159419698206))*sp.cos(thetas[0]), 1.0*(-174.15*sp.sin(thetas[1] + thetas[2] + thetas[3]) + 200*sp.sin(thetas[1] + thetas[2]))*sp.cos(thetas[0]), 1.0*-174.15*sp.sin(thetas[1] + thetas[2] + thetas[3])*sp.cos(thetas[0]), 0], [-1.0*(-174.15*sp.cos(thetas[1] + thetas[2] + thetas[3]) + 200*sp.cos(thetas[1] + thetas[2]) + 206.16*sp.sin(thetas[1] - 0.240159419698206))*sp.cos(thetas[0]), 1.0*(-174.15*sp.sin(thetas[1] + thetas[2] + thetas[3]) + 200*sp.sin(thetas[1] + thetas[2]) - 206.16*sp.cos(thetas[1] - 0.240159419698206))*sp.sin(thetas[0]), 1.0*(-174.15*sp.sin(thetas[1] + thetas[2] + thetas[3]) + 200*sp.sin(thetas[1] + thetas[2]))*sp.sin(thetas[0]), 1.0*-174.15*sp.sin(thetas[0])*sp.sin(thetas[1] + thetas[2] + thetas[3]), 0], [0, 1.0*-174.15*sp.cos(thetas[1] + thetas[2] + thetas[3]) + 1.0*200*sp.cos(thetas[1] + thetas[2]) + 1.0*206.16*sp.sin(thetas[1] - 0.240159419698206), 1.0*-174.15*sp.cos(thetas[1] + thetas[2] + thetas[3]) + 1.0*200*sp.cos(thetas[1] + thetas[2]), 1.0*-174.15*sp.cos(thetas[1] + thetas[2] + thetas[3]), 0], [0, 0, 0, 0, 1], [0, 1, 1, 1, 0]], dtype="float64")
 
 
 def fk_transform(alpha, a, d, theta):
@@ -61,7 +63,7 @@ def inverse_kinematics(current_thetas, goal_pose):
 
     # CHANGED THIS TO 15000 BECAUSE DETERMINANT IS BIG WHEN IT SPAZZES
     if abs(jdet) > 1:
-        rotational_change = (np.linalg.inv(j) @ current_linear_change)
+        rotational_change = (np.linalg.pinv(j) @ current_linear_change)
         # Update thetas to new position
         new_thetas = current_thetas + rotational_change
 
@@ -107,7 +109,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.goal_pose = np.array([156.625, 0.0, 313.15, 0, 0], dtype="float64")
         # self.goal_pose = np.array([0.0, 0.0, 737.4, 0, 0], dtype="float64")
         self.goal_pose = np.array(
-            [0.0, 0.0, 400.0, np.pi/2, -np.pi/2], dtype="float64")
+            [0.0, 0.0, 300.0, np.pi/2, 0.0], dtype="float64")
 
         self.t1, self.t2, self.t3, self.t4, self.t5 = [
             np.pi], [np.pi], [np.pi], [np.pi], [np.pi]
@@ -124,11 +126,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.frames, self.t1, pen='b', name="Waist")
         self.t2_line = self.joint_plot.plot(
             self.frames, self.t2, pen='g', name="Shoulder")
-        self.t4_line = self.joint_plot.plot(
+        self.t3_line = self.joint_plot.plot(
             self.frames, self.t3, pen='r', name="Elbow")
-        self.t5_line = self.joint_plot.plot(
+        self.t4_line = self.joint_plot.plot(
             self.frames, self.t4, pen='c', name="Wrist Pitch")
-        self.t6_line = self.joint_plot.plot(
+        self.t5_line = self.joint_plot.plot(
             self.frames, self.t5, pen='m', name="Wrist Roll")
         # Jacobian determinant graph
         self.det_line = self.det_plot.plot(
@@ -152,8 +154,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.update_plot_data)
         self.timer.start()
 
-    def update_plot_data(self):
-        # Increment the number of simulated time steps
+    def update_plot_data(self):  # Increment the number of simulated time steps
         self.frames.append(self.frames[-1] + 1)
         # Compute the next set of joint angles with inverse kinematics
         new_thetas, new_jdet = inverse_kinematics(
@@ -186,8 +187,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # Update the joint angles plot
         self.t1_line.setData(self.frames, self.t1)
         self.t2_line.setData(self.frames, self.t2)
-        self.t4_line.setData(self.frames, self.t3)
-        self.t5_line.setData(self.frames, self.t4)
+        self.t3_line.setData(self.frames, self.t3)
+        self.t4_line.setData(self.frames, self.t4)
+        self.t5_line.setData(self.frames, self.t5)
         # Update the determinant plot
         self.det_line.setData(self.frames, self.jdets)
         # Update the position plot

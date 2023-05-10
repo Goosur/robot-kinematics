@@ -9,5 +9,4 @@ add_executable(inverse_kinematics
     ./src/fk.cpp)
 target_link_libraries(inverse_kinematics
     dynamixel_helper
-    dxl_x64_cpp
     Eigen3::Eigen)
