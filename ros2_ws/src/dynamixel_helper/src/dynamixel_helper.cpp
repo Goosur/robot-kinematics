@@ -88,7 +88,7 @@ std::vector<double> DynamixelHelper::groupGetAngle(std::vector<uint8_t> ids) {
   std::vector<uint32_t> retrieved_data = groupReadMotor(ids, 132, 4);
   std::vector<double> present_positions(retrieved_data.size());
   for (size_t i = 0; i < retrieved_data.size(); i++)
-    present_positions.push_back(retrieved_data[i] * 0.088 * M_PI / 180.0);
+    present_positions[i] = (retrieved_data[i] * 0.088 * M_PI / 180.0);
 
   return present_positions;
 }

@@ -23,7 +23,8 @@ public:
 
 private:
   void timer_callback() {
-    std::vector<double> angles = dh.groupGetAngle({1, 3, 4, 5, 6});
+    std::vector<uint8_t> motor_ids{1, 3, 4, 5, 6};
+    std::vector<double> angles = dh.groupGetAngle(motor_ids);
     for (double &angle : angles) {
       angle -= M_PI;
     }

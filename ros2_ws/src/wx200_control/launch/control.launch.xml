@@ -1,0 +1,10 @@
+<launch>
+    <!-- <node name="motor_writer" pkg="wx200_control" exec="multi_motor_writer"/> -->
+    <node name="joint_state_publisher" pkg="wx200_control" exec="state_publisher"/>
+    <node pkg="tf2_ros" exec="static_transform_publisher" args="--x 0.075 --y 0.2 --z -0.11325 --frame-id base_link --child-frame-id work_station"/>
+    <node pkg="tf2_ros" exec="static_transform_publisher" args="--z 0.17415 --frame-id wrist_roll --child-frame-id tool"/>
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+	<param name='robot_description' value="$(command 'cat $(find-pkg-share wx200_control)/urdf/wx200.urdf.xml')"/>
+    </node>
+    <node pkg="rviz2" exec="rviz2" args="-d $(find-pkg-share wx200_control)/rviz/urdf.rviz.yaml"/>
+</launch>
