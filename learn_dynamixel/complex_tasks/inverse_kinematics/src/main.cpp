@@ -17,7 +17,7 @@ int main() {
   // End effector goal pose [x, y, z, roll, pitch]
   std::vector<std::array<double, 5>> goal_poses{
       {200.0, 0.0, 250.0, 0.0, 0.0},
-      // {350.0, 0.0, 0.0, 0.0, 0.0},
+      {350.0, 0.0, 0.0, M_PI / 2.0, M_PI / 4.0},
   };
   // std::array<double, 5> goal_pose;
 

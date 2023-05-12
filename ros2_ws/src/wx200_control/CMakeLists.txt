@@ -11,27 +11,39 @@ endif ()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(dynamixel_sdk REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(dynamixel_helper REQUIRED)
 find_package(wx200_control_interfaces REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 add_executable(multi_motor_writer src/motor_pub.cpp)
 ament_target_dependencies(multi_motor_writer
         rclcpp
-        wx200_control_interfaces
-        dynamixel_sdk
-        dynamixel_helper)
+	sensor_msgs	
+        dynamixel_helper
+	wx200_control_interfaces)
 
 add_executable(state_publisher src/state_publisher.cpp)
 ament_target_dependencies(state_publisher
         rclcpp
         sensor_msgs
-        dynamixel_sdk
         dynamixel_helper)
+
+add_executable(inverse_kinematics
+  src/ik_srv/ik_server.cpp
+  src/ik_srv/ik.cpp
+  src/ik_srv/fk.cpp)
+ament_target_dependencies(inverse_kinematics
+	rclcpp
+	wx200_control_interfaces
+	sensor_msgs
+	tf2_ros
+	dynamixel_helper)
 
 install(TARGETS
         multi_motor_writer
         state_publisher
+	inverse_kinematics
         DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY

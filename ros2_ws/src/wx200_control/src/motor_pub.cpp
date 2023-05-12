@@ -5,7 +5,7 @@
 #include "dynamixel_helper/dynamixel_helper.h"
 #include "dynamixel_sdk/dynamixel_sdk.h"
 #include "rclcpp/rclcpp.hpp"
-#include "wx200_control_interfaces/msg/joint_goal.hpp"
+#include "sensor_msgs/msg/joint_state.hpp"
 
 // Change to usb device that appears when dynamixel controller is pluggied in
 #define DEVICE_PORT "/dev/ttyUSB0"
@@ -19,25 +19,25 @@ class MultiMotorWriter : public rclcpp::Node {
 public:
   MultiMotorWriter() : Node("motors_writer") {
     subscription_ =
-        this->create_subscription<wx200_control_interfaces::msg::JointGoal>(
+        this->create_subscription<sensor_msgs::msg::JointState>(
             "joint_goals", 10,
             std::bind(&MultiMotorWriter::write_motors, this, _1));
   }
 
 private:
-  void write_motors(const wx200_control_interfaces::msg::JointGoal &msg) {
+  void write_motors(const sensor_msgs::msg::JointState &msg) {
     // Arrays for dynamixel communication
     std::stringstream log;
-    for (size_t i = 0; i < msg.id.size(); ++i) {
-      log << "\nID: " << msg.id[i] << "\nPosition: " << msg.position[i]
-          << "\n--------------";
+    for (size_t i = 0; i < msg.name.size(); ++i) {
+      log << "\nID: " << msg.name[i] << " Position: " << msg.position[i];
     }
+    log << "\n--------------";
     RCLCPP_INFO(this->get_logger(), "%s", log.str().c_str());
 
     // Send goals to wx200
-    dh.groupSetAngle(msg.id, msg.position);
+    // dh.groupSetAngle({1, 3, 4, 5, 6}, msg.position);
   }
-  rclcpp::Subscription<wx200_control_interfaces::msg::JointGoal>::SharedPtr
+  rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr
       subscription_;
 };
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   dh.setBaudrate(BAUDRATE);
 
   // TODO: MOVE THIS TO A SERVICE
-  std::vector<uint8_t> ids{1, 2, 4, 5, 6, 7};
+  std::vector<uint8_t> ids{1, 3, 4, 5, 6};
   // Enable torque
   dh.groupTorqueEnable(ids);
 

@@ -2,8 +2,8 @@
 #include <cmath>
 #include <iostream>
 
-DynamixelHelper::DynamixelHelper(const char *port) {
-  this->portHandler = dynamixel::PortHandler::getPortHandler(port);
+DynamixelHelper::DynamixelHelper(std::string port) {
+  this->portHandler = dynamixel::PortHandler::getPortHandler(port.c_str());
   this->packetHandler = dynamixel::PacketHandler::getPacketHandler();
 }
 
@@ -85,36 +85,31 @@ void DynamixelHelper::groupSetAngle(std::vector<uint8_t> ids,
 }
 
 std::vector<double> DynamixelHelper::groupGetAngle(std::vector<uint8_t> ids) {
-  std::vector<uint32_t> retrieved_data = groupReadMotor(ids, 132, 4);
-  std::vector<double> present_positions(retrieved_data.size());
+  std::vector<uint32_t> retrieved_data = this->groupReadMotor(ids, 132, 4);
+  std::vector<double> present_positions;
   for (size_t i = 0; i < retrieved_data.size(); i++)
-    present_positions[i] = (retrieved_data[i] * 0.088 * M_PI / 180.0);
+    present_positions.push_back(retrieved_data[i] * 0.088 * M_PI / 180.0);
 
   return present_positions;
 }
 
-/*
- *
- * PRIVATE METHODS
- *
- */
-
 void DynamixelHelper::writeMotor(uint8_t id, uint16_t address, uint32_t data,
                                  uint16_t byte_size) {
-  if (byte_size == 1)
-    this->comm_result = this->packetHandler->write1ByteTxRx(
-        this->portHandler, id, address, data, &this->error);
-  else if (byte_size == 4)
-    this->comm_result = this->packetHandler->write4ByteTxRx(
-        this->portHandler, id, address, data, &this->error);
+  int comm_result = COMM_TX_FAIL;
+  uint8_t error = 0;
 
-  if (this->comm_result != COMM_SUCCESS) {
-    std::cerr << this->packetHandler->getTxRxResult(this->comm_result)
-              << std::endl;
+  if (byte_size == 1)
+    comm_result = this->packetHandler->write1ByteTxRx(this->portHandler, id,
+                                                      address, data, &error);
+  else if (byte_size == 4)
+    comm_result = this->packetHandler->write4ByteTxRx(this->portHandler, id,
+                                                      address, data, &error);
+
+  if (comm_result != COMM_SUCCESS) {
+    std::cerr << this->packetHandler->getTxRxResult(comm_result) << std::endl;
     std::exit(1);
-  } else if (this->error != 0) {
-    std::cerr << this->packetHandler->getRxPacketError(this->error)
-              << std::endl;
+  } else if (error != 0) {
+    std::cerr << this->packetHandler->getRxPacketError(error) << std::endl;
     std::exit(1);
   }
 }
@@ -122,15 +117,16 @@ void DynamixelHelper::writeMotor(uint8_t id, uint16_t address, uint32_t data,
 uint32_t DynamixelHelper::readMotor(uint8_t id, uint16_t address) {
   uint32_t present_position;
 
-  this->comm_result = this->packetHandler->read4ByteTxRx(
-      this->portHandler, id, address, &present_position, &this->error);
-  if (this->comm_result != COMM_SUCCESS) {
-    std::cerr << this->packetHandler->getTxRxResult(this->comm_result)
-              << std::endl;
+  int comm_result = COMM_TX_FAIL;
+  uint8_t error = 0;
+
+  comm_result = this->packetHandler->read4ByteTxRx(
+      this->portHandler, id, address, &present_position, &error);
+  if (comm_result != COMM_SUCCESS) {
+    std::cerr << this->packetHandler->getTxRxResult(comm_result) << std::endl;
     std::exit(1);
-  } else if (this->error != 0) {
-    std::cerr << this->packetHandler->getRxPacketError(this->error)
-              << std::endl;
+  } else if (error != 0) {
+    std::cerr << this->packetHandler->getRxPacketError(error) << std::endl;
     std::exit(1);
   }
 
@@ -161,8 +157,7 @@ void DynamixelHelper::groupWriteMotor(std::vector<uint8_t> ids,
     }
 
     // Add each goal to each motor write parameter
-    this->addparam_result = groupSyncWrite.addParam(ids[i], &param_data[0]);
-    if (!this->addparam_result) {
+    if (!groupSyncWrite.addParam(ids[i], &param_data[0])) {
       std::cerr << "[ID: " << ids[i] << "] GroupSyncWrite AddParam failed"
                 << std::endl;
       std::exit(1);
@@ -170,10 +165,9 @@ void DynamixelHelper::groupWriteMotor(std::vector<uint8_t> ids,
   }
 
   // Send write packet
-  this->comm_result = groupSyncWrite.txPacket();
-  if (this->comm_result != COMM_SUCCESS) {
-    std::cerr << this->packetHandler->getTxRxResult(this->comm_result)
-              << std::endl;
+  int comm_result = groupSyncWrite.txPacket();
+  if (comm_result != COMM_SUCCESS) {
+    std::cerr << this->packetHandler->getTxRxResult(comm_result) << std::endl;
   }
 
   // Clear stored write values
@@ -186,35 +180,31 @@ std::vector<uint32_t> DynamixelHelper::groupReadMotor(std::vector<uint8_t> ids,
   dynamixel::GroupSyncRead groupSyncRead(this->portHandler, this->packetHandler,
                                          address, byte_size);
 
-  std::vector<uint32_t> received_data(ids.size());
   // Add motors to groupsyncread for present position reading
-  for (size_t i = 0; i < ids.size(); i++) {
-    this->addparam_result = groupSyncRead.addParam(ids[i]);
-    if (!this->addparam_result) {
-      std::cerr << "[ID: " << ids[i] << "] GroupSyncRead AddParam failed"
+  for (auto id : ids) {
+    if (!groupSyncRead.addParam(id)) {
+      std::cerr << "[ID: " << id << "] GroupSyncRead AddParam failed"
                 << std::endl;
       std::exit(1);
     }
   }
 
   // GroupSyncRead present positions
-  this->comm_result = groupSyncRead.txRxPacket();
-  if (this->comm_result != COMM_SUCCESS) {
-    std::cerr << this->packetHandler->getTxRxResult(this->comm_result)
-              << std::endl;
+  int comm_result = groupSyncRead.txRxPacket();
+  if (comm_result != COMM_SUCCESS) {
+    std::cerr << this->packetHandler->getTxRxResult(comm_result) << std::endl;
   }
 
+  std::vector<uint32_t> received_data;
   // Check if GroupSyncRead data is available for each motor and save value
-  for (size_t i = 0; i < ids.size(); i++) {
-    this->getdata_result =
-        groupSyncRead.isAvailable(ids[i], address, byte_size);
-    if (!this->getdata_result) {
-      std::cerr << "[ID: " << ids[i] << "] GroupSyncRead GetData failed"
+  for (auto id : ids) {
+    if (!groupSyncRead.isAvailable(id, address, byte_size)) {
+      std::cerr << "[ID: " << id << "] GroupSyncRead GetData failed"
                 << std::endl;
       std::exit(1);
     }
 
-    received_data[i] = groupSyncRead.getData(ids[i], address, byte_size);
+    received_data.push_back(groupSyncRead.getData(id, address, byte_size));
   }
 
   return received_data;

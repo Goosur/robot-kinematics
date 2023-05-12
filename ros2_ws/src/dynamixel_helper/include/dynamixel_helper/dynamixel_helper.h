@@ -1,15 +1,31 @@
 #ifndef DYNAMIXEL_HELPER_H
 #define DYNAMIXEL_HELPER_H
 
-#include <cstdint>
 #include <dynamixel_sdk/dynamixel_sdk.h>
+#include <string>
 #include <vector>
 
 class DynamixelHelper {
 public:
-  DynamixelHelper(const char *port);
+  /**
+   * Create new dynamixel helper for specified device
+   */
+  DynamixelHelper(std::string port);
+
+  /**
+   * @brief Close porthandler and delete handler pointers.
+   */
   ~DynamixelHelper();
+
+  /**
+   * @brief Attach to physical device and open channel of communication
+   */
   void openPort();
+
+  /**
+   * @brief Set communication rate of the port handler
+   * @param baudrate - Number of signals sent per second
+   */
   void setBaudrate(const int baudrate);
 
   /**
@@ -89,18 +105,6 @@ public:
    */
   std::vector<double> groupGetAngle(std::vector<uint8_t> ids);
 
-private:
-  // Serial communication handlers
-  dynamixel::PortHandler *portHandler;
-  dynamixel::PacketHandler *packetHandler;
-
-  // Communication results/errors
-  int comm_result = COMM_TX_FAIL;
-  bool addparam_result = false;
-  bool getdata_result = false;
-  uint8_t error = 0;
-
-  // Private methods
   /**
    * @brief Send a serial packet to write to a register of a motor
    * @param id - ID of the motor of interest
@@ -122,9 +126,8 @@ private:
   /**
    * @brief Send a serial packet to simultaneously write to a register of
    * multiple motors
-   * @param ids - Array of IDs of the motors of interest
-   * @param ids_size - Size of the motor id array
-   * @param data - Array of data to write to the motor registers
+   * @param ids - Vector of IDs of the motors of interest
+   * @param data - Vector of data to write to the motor registers
    * @param address - Address to write to for every motor
    * @param byte_size - Size of the register to write
    */
@@ -134,14 +137,18 @@ private:
   /**
    * @brief Send a serial packet to simultaneously read from a register of
    * multiple motors
-   * @param ids - Array of IDs of the motors of interest
-   * @param ids_size - Size of the motor id array
+   * @param ids - Vector of IDs of the motors of interest
    * @param address - Address to read from for every motor
    * @param byte_size - Size of the register to read from
-   * @return
+   * @return std::vector<uint8_t> - Vector of joint angles read from the motors
    */
   std::vector<uint32_t> groupReadMotor(std::vector<uint8_t> ids,
                                        uint16_t address, uint16_t byte_size);
+
+private:
+  // Serial communication handlers
+  dynamixel::PortHandler *portHandler;
+  dynamixel::PacketHandler *packetHandler;
 };
 
 #endif

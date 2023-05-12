@@ -11,9 +11,12 @@
 
   <depend>rclcpp</depend>
   <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2_geometry_msgs</depend>
   <depend>dynamixel_sdk</depend>
   <depend>dynamixel_helper</depend>
   <depend>robot_state_publisher</depend>
+  <depend>tf2_ros</depend>
   <depend>wx200_control_interfaces</depend>
 
   <export>
