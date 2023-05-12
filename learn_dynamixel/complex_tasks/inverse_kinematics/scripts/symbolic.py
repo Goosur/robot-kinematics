@@ -2,9 +2,12 @@
 
 import sympy as sp
 
+# t1, t2, t3, t4, t5 = sp.symbols(
+#     "thetas[0] thetas[1] thetas[2] thetas[3] thetas[4]")
+# l1, l2, l3 = sp.symbols("206.16 200 -174.15")
 t1, t2, t3, t4, t5 = sp.symbols(
-    "thetas[0] thetas[1] thetas[2] thetas[3] thetas[4]")
-l1, l2, l3 = sp.symbols("206.16 200 -174.15")
+    "theta1 theta2 theta3 theta4 theta5")
+l1, l2, l3 = sp.symbols("l1 l2 l3")
 
 
 def fk_transform(alpha, a, d, theta):
@@ -33,15 +36,25 @@ for i in range(1, len(dh)):
     T = T @ fk_transform(dh[i][0], dh[i][1], dh[i][2], dh[i][3])
 
 T = sp.simplify(T)
-print("T from 0 to 6")
-print(T)
-
+# print("T from 0 to 6")
+# print(T)
+print("t1")
+sp.pprint(sp.diff(T[0, 3], t1))
+sp.pprint(sp.simplify(sp.diff(T[0, 3], t1)))
+print("t2")
+sp.pprint(sp.diff(T[0, 3], t2))
+print("t3")
+sp.pprint(sp.diff(T[0, 3], t3))
+print("t4")
+sp.pprint(sp.diff(T[0, 3], t4))
+print("t5")
+sp.pprint(sp.diff(T[0, 3], t5))
 
 # Build pose (x, y, z, roll, pitch, yaw)
 xyz = T[0:3, 3]
 roll_pitch = sp.Matrix([[t5], [t2 + t3 + t4]])
 pose = sp.Matrix.vstack(xyz, roll_pitch)
 
-J = sp.simplify(pose.jacobian(sp.Matrix([t1, t2, t3, t4, t5])))
-print("J")
-print(J)
+# J = sp.simplify(pose.jacobian(sp.Matrix([t1, t2, t3, t4, t5])))
+# print("J")
+# print(J)

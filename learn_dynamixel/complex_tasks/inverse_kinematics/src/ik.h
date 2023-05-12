@@ -15,7 +15,7 @@ namespace IK {
  */
 Matrix5d generate_jacobian(std::array<double, 5> thetas);
 std::array<double, 5> get_next_thetas(std::array<double, 5> current_thetas,
-                                      std::array<double, 5> goal_thetas);
+                                      std::array<double, 5> goal_pose);
 }; // namespace IK
 
 #endif
